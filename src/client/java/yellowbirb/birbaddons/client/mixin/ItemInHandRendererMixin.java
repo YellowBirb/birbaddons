@@ -49,7 +49,7 @@ public class ItemInHandRendererMixin {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
                     if (tag.toString().toLowerCase().contains("drill".toLowerCase())) {
-                        poseStack.translate(0.2815F, 0.125F, -0.3F);
+                        poseStack.translate(-0.2815F, 0.125F, -0.3F);
                         poseStack.mulPose(Axis.YP.rotationDegrees(-21.318F));
                         poseStack.mulPose(Axis.XP.rotationDegrees(19.3F));
                         poseStack.mulPose(Axis.ZP.rotationDegrees(82.7F));
