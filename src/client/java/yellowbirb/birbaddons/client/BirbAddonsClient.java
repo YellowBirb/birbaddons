@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -23,21 +23,21 @@ public class BirbAddonsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("turn")
-						.then(ClientCommandManager.argument("axis", StringArgumentType.string())
-								.then(ClientCommandManager.argument("value", FloatArgumentType.floatArg())
+				dispatcher.register(ClientCommands.literal("turn")
+						.then(ClientCommands.argument("axis", StringArgumentType.string())
+								.then(ClientCommands.argument("value", FloatArgumentType.floatArg())
 										.executes(BirbAddonsClient::blablabla))))
 		);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("turnrel")
-						.then(ClientCommandManager.argument("axis", StringArgumentType.string())
-								.then(ClientCommandManager.argument("value", FloatArgumentType.floatArg())
+				dispatcher.register(ClientCommands.literal("turnrel")
+						.then(ClientCommands.argument("axis", StringArgumentType.string())
+								.then(ClientCommands.argument("value", FloatArgumentType.floatArg())
 										.executes(BirbAddonsClient::blablabla2))))
 		);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("turnreset").executes((context) -> {
+				dispatcher.register(ClientCommands.literal("turnreset").executes((context) -> {
 					x = 0F;
 					y = 0F;
 					z = 0F;
@@ -49,13 +49,13 @@ public class BirbAddonsClient implements ClientModInitializer {
 		);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("turnoutput").executes((context) -> {
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("x: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("y: " + y), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("z: " + z), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("tx: " + tx), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("ty: " + ty), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("tz: " + tz), false);
+				dispatcher.register(ClientCommands.literal("turnoutput").executes((context) -> {
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("x: " + x));
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("y: " + y));
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("z: " + z));
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("tx: " + tx));
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("ty: " + ty));
+					Minecraft.getInstance().player.sendSystemMessage(Component.literal("tz: " + tz));
 					return 1;
 				}))
 		);
