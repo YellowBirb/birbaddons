@@ -1,6 +1,8 @@
 package yellowbirb.birbaddons.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +14,18 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 	public static ChatTab chatTab = ChatTab.ALL;
 
+	public static boolean drillPosition = false;
+
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("BirbAddons is initializing :3");
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+				dispatcher.register(ClientCommands.literal("holddrill").executes((context) -> {
+                    drillPosition = !drillPosition;
+					return 1;
+				}))
+		);
 	}
 
 	private static String removeFormatting(String string) {

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import org.spongepowered.asm.mixin.Mixin;
+import yellowbirb.birbaddons.client.BirbAddonsClient;
 
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
@@ -42,7 +43,7 @@ public class ItemInHandRendererMixin {
 
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
-        if (true /* TODO: isEnabled */) {
+        if (BirbAddonsClient.drillPosition /* TODO: isEnabled */) {
             CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
             if (customData != null) {
                 Tag tag = customData.copyTag().get("id");
