@@ -49,7 +49,7 @@ public class ItemInHandRendererMixin {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
                     if (tag.toString().toLowerCase().contains("drill".toLowerCase())) {
-                        poseStack.translate(0.2815F, 0.125F, -0.3F);
+                        poseStack.translate(-0.2815F, 0.125F, -0.3F);
                         poseStack.mulPose(Axis.YP.rotationDegrees(-21.318F));
                         poseStack.mulPose(Axis.XP.rotationDegrees(19.3F));
                         poseStack.mulPose(Axis.ZP.rotationDegrees(82.7F));
@@ -61,9 +61,9 @@ public class ItemInHandRendererMixin {
     }
 
     @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
-    private boolean shouldInstantlyReplaceVisibleItem(ItemStack itemStack, ItemStack itemStack2, Operation<Boolean> original) {
+    private boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
         if (true /* TODO: isEnabled */) {
-            CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+            CustomData customData = currentlyVisibleItem.get(DataComponents.CUSTOM_DATA);
             if (customData != null) {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
@@ -73,6 +73,6 @@ public class ItemInHandRendererMixin {
                 }
             }
         }
-        return original.call(itemStack, itemStack2);
+        return original.call(currentlyVisibleItem, expectedItem);
     }
 }
