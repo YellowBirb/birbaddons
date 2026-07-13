@@ -1,95 +1,64 @@
 package yellowbirb.birbaddons.client;
 
-import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class BirbAddonsClient implements ClientModInitializer {
+	public static final String MOD_ID = "birbaddons";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static float x = 0F;
-	public static float y = 0F;
-	public static float z = 0F;
-	public static float tx = 0F;
-	public static float ty = 0F;
-	public static float tz = 0F;
+	public static ChatTab chatTab = ChatTab.ALL;
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommands.literal("turn")
-						.then(ClientCommands.argument("axis", StringArgumentType.string())
-								.then(ClientCommands.argument("value", FloatArgumentType.floatArg())
-										.executes(BirbAddonsClient::blablabla))))
-		);
-
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommands.literal("turnrel")
-						.then(ClientCommands.argument("axis", StringArgumentType.string())
-								.then(ClientCommands.argument("value", FloatArgumentType.floatArg())
-										.executes(BirbAddonsClient::blablabla2))))
-		);
-
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommands.literal("turnreset").executes((context) -> {
-					x = 0F;
-					y = 0F;
-					z = 0F;
-					tx = 0F;
-					ty = 0F;
-					tz = 0F;
-					return 1;
-				}))
-		);
-
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommands.literal("turnoutput").executes((context) -> {
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("x: " + x));
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("y: " + y));
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("z: " + z));
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("tx: " + tx));
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("ty: " + ty));
-					Minecraft.getInstance().player.sendSystemMessage(Component.literal("tz: " + tz));
-					return 1;
-				}))
-		);
+		LOGGER.info("BirbAddons is initializing :3");
 	}
 
-	private static int blablabla(CommandContext<FabricClientCommandSource> context) {
-		String axis = StringArgumentType.getString(context, "axis");
-		float value = FloatArgumentType.getFloat(context, "value");
-
-		switch (axis) {
-			case "x" -> x = value;
-			case "y" -> y = value;
-			case "z" -> z = value;
-			case "tx" -> tx = value;
-			case "ty" -> ty = value;
-			case "tz" -> tz = value;
+	private static String removeFormatting(String string) {
+		StringBuilder stringBuilder = new StringBuilder(string);
+		int deleted = 0;
+		for (int i = 0; i < string.length(); i++) {
+			while (string.charAt(i) == '§') {
+				stringBuilder.deleteCharAt(i-deleted);
+				deleted++;
+				i++;
+				stringBuilder.deleteCharAt(i-deleted);
+				deleted++;
+				i++;
+			}
 		}
-
-		return 1;
+		return stringBuilder.toString();
 	}
 
-	private static int blablabla2(CommandContext<FabricClientCommandSource> context) {
-		String axis = StringArgumentType.getString(context, "axis");
-		float value = FloatArgumentType.getFloat(context, "value");
+	public static boolean chatFilter(Component text) {
+		String message = removeFormatting(text.getString());
 
-		switch (axis) {
-			case "x" -> x += value;
-			case "y" -> y += value;
-			case "z" -> z += value;
-			case "tx" -> tx += value;
-			case "ty" -> ty += value;
-			case "tz" -> tz += value;
-		}
+		return switch (chatTab) {
+			case ALL -> true;
+			case PARTY -> message.startsWith("Party > ") || message.startsWith("P > ") ||
+					message.endsWith("has invited you to join their party!") ||
+					message.endsWith("to the party! They have 60 seconds to accept.") ||
+					message.equals("The party was disbanded because all invites expired and the party was empty") ||
+					message.endsWith("has disbanded the party!") ||
+					message.endsWith("has disconnected, they have 5 minutes to rejoin before they are removed from the party.") ||
+					message.endsWith("joined the party.") || message.endsWith("has left the party.") ||
+					message.endsWith("has been removed from the party.") || message.startsWith("The party was transferred to ") ||
+					(message.startsWith("Kicked ") && message.endsWith(" because they were offline."));
+			case GUILD -> message.startsWith("Guild > ") || message.startsWith("G > ");
+			case PRIVATE -> message.startsWith("To ") || message.startsWith("From ") ||
+					message.startsWith("Friend > ");
+			case COOP -> message.startsWith("Co-op > ");
+		};
+	}
 
-		return 1;
+	public enum ChatTab {
+		ALL,
+		PARTY,
+		GUILD,
+		PRIVATE,
+		COOP
 	}
 }

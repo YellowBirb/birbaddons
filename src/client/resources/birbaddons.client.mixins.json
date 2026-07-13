@@ -3,6 +3,8 @@
 	"package": "yellowbirb.birbaddons.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"ChatComponentMixin",
+		"ChatScreenMixin",
 		"ItemInHandRendererMixin"
 	],
 	"injectors": {

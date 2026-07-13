@@ -3,17 +3,25 @@
 	"id": "birbaddons",
 	"version": "${version}",
 	"name": "BirbAddons",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Various features I made for Hypixel Skyblock",
 	"authors": [
-		"yellowbirb"
+		{
+			"name": "YellowBirb",
+			"contact": {
+				"discord": "yellowbirb"
+			}
+		}
+	],
+	"contributors": [
+		"SoberCounsel - Nr.1 Theodolite Fan",
+		"3Ash - Ideas and Value Fine-Tuning"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://https://github.com/YellowBirb/birbaddons"
 	},
-	"license": "CC0-1.0",
+	"license": "CC-BY-NC-SA-4.0",
 	"icon": "assets/birbaddons/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"client": [
 			"yellowbirb.birbaddons.client.BirbAddonsClient"

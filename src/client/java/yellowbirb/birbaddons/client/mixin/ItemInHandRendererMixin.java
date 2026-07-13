@@ -15,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import org.spongepowered.asm.mixin.Mixin;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
 
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
@@ -49,10 +48,10 @@ public class ItemInHandRendererMixin {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
                     if (tag.toString().toLowerCase().contains("drill".toLowerCase())) {
-                        poseStack.translate(BirbAddonsClient.tx, BirbAddonsClient.ty, BirbAddonsClient.tz); // tx = 0.35 ; ty = ? ; tz = ?
-                        poseStack.mulPose(Axis.YP.rotationDegrees(BirbAddonsClient.y));
-                        poseStack.mulPose(Axis.XP.rotationDegrees(BirbAddonsClient.x));
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(BirbAddonsClient.z));
+                        poseStack.translate(0.2815F, 0.125F, -0.3F);
+                        poseStack.mulPose(Axis.YP.rotationDegrees(-21.318F));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(19.3F));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(82.7F));
                     }
                 }
             }
