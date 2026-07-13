@@ -3,7 +3,7 @@
 	"package": "yellowbirb.birbaddons.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"HeldItemRendererMixin"
+		"ItemInHandRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

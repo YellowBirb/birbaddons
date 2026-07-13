@@ -51,11 +51,11 @@ public class BirbAddonsClient implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommandManager.literal("turnoutput").executes((context) -> {
 					Minecraft.getInstance().player.displayClientMessage(Component.literal("x: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("y: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("z: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("tx: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("ty: " + x), false);
-					Minecraft.getInstance().player.displayClientMessage(Component.literal("tz: " + x), false);
+					Minecraft.getInstance().player.displayClientMessage(Component.literal("y: " + y), false);
+					Minecraft.getInstance().player.displayClientMessage(Component.literal("z: " + z), false);
+					Minecraft.getInstance().player.displayClientMessage(Component.literal("tx: " + tx), false);
+					Minecraft.getInstance().player.displayClientMessage(Component.literal("ty: " + ty), false);
+					Minecraft.getInstance().player.displayClientMessage(Component.literal("tz: " + tz), false);
 					return 1;
 				}))
 		);
