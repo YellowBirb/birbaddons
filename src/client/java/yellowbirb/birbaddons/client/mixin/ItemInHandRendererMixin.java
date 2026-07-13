@@ -46,7 +46,7 @@ public class ItemInHandRendererMixin {
             if (customData != null) {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
-                    if (tag.toString().toLowerCase().endsWith("drill")) {
+                    if (tag.toString().toLowerCase().contains("drill".toLowerCase())) {
                         poseStack.translate(BirbAddonsClient.tx, BirbAddonsClient.ty, BirbAddonsClient.tz); // tx = 0.35 ; ty = ? ; tz = ?
                         poseStack.mulPose(Axis.YP.rotationDegrees(BirbAddonsClient.y));
                         poseStack.mulPose(Axis.XP.rotationDegrees(BirbAddonsClient.x));
