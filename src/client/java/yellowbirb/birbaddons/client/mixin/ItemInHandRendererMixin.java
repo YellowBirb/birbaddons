@@ -36,13 +36,15 @@ public class ItemInHandRendererMixin {
             } else {
                 original.call(attack, poseStack, invert, arm);
             }
+        } else {
+            original.call(attack, poseStack, invert, arm);
         }
     }
 
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
         if (true /* TODO: isEnabled */) {
-            CustomData customData = Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND).get(DataComponents.CUSTOM_DATA);
+            CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
             if (customData != null) {
                 Tag tag = customData.copyTag().get("id");
                 if (tag != null) {
@@ -56,5 +58,21 @@ public class ItemInHandRendererMixin {
             }
         }
         original.call(mob, itemStack, type, poseStack, submitNodeCollector, lightCoords);
+    }
+
+    @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
+    private boolean shouldInstantlyReplaceVisibleItem(ItemStack itemStack, ItemStack itemStack2, Operation<Boolean> original) {
+        if (true /* TODO: isEnabled */) {
+            CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+            if (customData != null) {
+                Tag tag = customData.copyTag().get("id");
+                if (tag != null) {
+                    if (tag.toString().toLowerCase().contains("drill".toLowerCase())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return original.call(itemStack, itemStack2);
     }
 }
