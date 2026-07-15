@@ -31,6 +31,8 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 	public static boolean drillPosition = false;
 
+	// TODO: try to completely isolate features?
+
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("BirbAddons is initializing :3");

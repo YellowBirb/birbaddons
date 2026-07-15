@@ -26,6 +26,7 @@ public abstract class ChatScreenMixin extends Screen {
         super(title);
     }
 
+    // Chat Tabs: Insert Tab Buttons into Chat Screen
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         Minecraft client = Minecraft.getInstance();
@@ -49,6 +50,8 @@ public abstract class ChatScreenMixin extends Screen {
         }
     }
 
+    // Chat Tabs: reset focus to chat field if arrow key was pressed
+    //            otherwise Buttons would be focused, not allowing user to type
     @Inject(at = @At("HEAD"), method = "keyPressed")
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         setFocused(this.input);

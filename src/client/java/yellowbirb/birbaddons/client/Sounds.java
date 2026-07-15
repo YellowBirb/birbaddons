@@ -6,8 +6,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 public class Sounds {
-    // TODO: split
     public static final SoundEvent ADRENALINEACTIVATE = registerSound("adrenalineactivate");
+    public static final SoundEvent ADRENALINESTART = registerSound("adrenalinestart");
+    public static final SoundEvent ADRENALINEEND = registerSound("adrenalineend");
     public static final SoundEvent FULLADRENALINE = registerSound("fulladrenaline");
 
     private static SoundEvent registerSound(String id) {

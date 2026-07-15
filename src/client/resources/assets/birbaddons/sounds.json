@@ -3,6 +3,14 @@
     "subtitle": "sound.birbaddons.adrenalineactivate",
     "sounds": ["birbaddons:adrenalinebar/adrenalineactivate"]
   },
+  "adrenalinestart": {
+    "subtitle": "sound.birbaddons.adrenalinestart",
+    "sounds": ["birbaddons:adrenalinebar/adrenalinestart"]
+  },
+  "adrenalineend": {
+    "subtitle": "sound.birbaddons.adrenalineend",
+    "sounds": ["birbaddons:adrenalinebar/adrenalineend"]
+  },
   "fulladrenaline": {
     "subtitle": "sound.birbaddons.fulladrenaline",
     "sounds": ["birbaddons:adrenalinebar/fulladrenaline"]

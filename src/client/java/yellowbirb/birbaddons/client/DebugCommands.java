@@ -15,7 +15,7 @@ public class DebugCommands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("startAdrenalin").executes((_) -> {
-                    AdrenalineBar.adrenalineUsed(40, 100);
+                    AdrenalineBar.adrenalineUsed("", 40, 100);
                     return 1;
                 }))
         );
@@ -32,13 +32,15 @@ public class DebugCommands {
     private static int executeTestTheodolite(CommandContext<FabricClientCommandSource> context) {
         int deltay = IntegerArgumentType.getInteger(context, "deltay");
         int angle = IntegerArgumentType.getInteger(context, "angle");
-        ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
         if (deltay == 0) {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[Birb's Theodolite] §aYou are at the exact height!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aYou are at the exact height!"));
+            ReceiveGameMessageEvent.receiveMessage(Component.literal("You are at the exact height!"));
         } else if (deltay > 0) {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[Birb's Theodolite] §aThe target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aThe target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
+            ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
         } else {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[Birb's Theodolite] §aThe target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aThe target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
+            ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
         }
 
         return 1;

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ItemModelResolver.class)
 public class ItemModelResolverMixin {
+    // disable drill moving in hand: stop swap animation that plays when fuel/durability decreases
     @WrapMethod(method = "swapAnimationScale")
     public float swapAnimationScale(ItemStack stack, Operation<Float> original) {
         if (true /* TODO: isEnabled */) {

@@ -9,6 +9,7 @@ import yellowbirb.birbaddons.client.render.Renderer;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
+    // Renderer
     @Inject(at = @At("RETURN"), method = "close")
     private void onGameRendererClose(CallbackInfo info) {
         Renderer.close();

@@ -12,8 +12,13 @@ import yellowbirb.birbaddons.client.Sounds;
 public class AdrenalineBar {
 
     //TODO: ItemEvents#USE
+    // TODO: figure out how to do this like ughhhhh
 
+    // TODO: isEnabled (but like better than this)
     public static boolean enabled = false;
+
+    private static boolean available = true;
+    private static boolean inUse = false;
 
     private static int maxDurationTicks = 0;
     private static int durationTicks = 0;
@@ -39,19 +44,13 @@ public class AdrenalineBar {
             float mult = 1.0F;
 
             float barProgress;
-            if (durationTicks > 0 && cooldownTicks > 0) {
+            if (inUse) {
                 barProgress = (float) durationTicks / maxDurationTicks;
-            } else if (durationTicks <= 0 && cooldownTicks > 0) {
-                barProgress = 1 - (float) cooldownTicks / (maxCooldownTicks - maxDurationTicks);
             } else {
-                barProgress = 1.0F;
+                barProgress = 1 - (float) cooldownTicks / (maxCooldownTicks - maxDurationTicks);
             }
 
-            if (cooldownTicks == 0) {
-                recharged();
-            }
-
-            if (barProgress == 1) {
+            if (available) {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderFullTexture, x, y, 0, 6, Math.round(104*mult), Math.round(32*mult), 104, 32, 104, 240);
             } else {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderTexture, x, y, 0, 6, Math.round(104*mult), Math.round(32*mult), 104, 32, 104, 480);
@@ -78,24 +77,53 @@ public class AdrenalineBar {
         lastDelta = ticktimer.getGameTimeDeltaPartialTick(false);
     }
 
-    public static void adrenalineUsed(int newDurationTicks, int newCooldownTicks) {
+    public static void adrenalineUsed(String ability, int newDurationTicks, int newCooldownTicks) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null) {
-            player.playSound(Sounds.ADRENALINEACTIVATE, 0.5F, 1);
+        if (enabled) {
+            if (player != null) {
+                if (ability.equals("Pickobulus")) {
+                    player.playSound(Sounds.ADRENALINEACTIVATE);
+                } else {
+                    player.playSound(Sounds.ADRENALINESTART, 0.5F, 1);
+                }
+            }
         }
+        available = false;
+        inUse = true;
         maxDurationTicks = newDurationTicks;
         durationTicks = newDurationTicks;
         maxCooldownTicks = newCooldownTicks;
         cooldownTicks = newCooldownTicks;
     }
 
-    public static void recharged() {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null) {
-            player.playSound(Sounds.FULLADRENALINE);
+    public static void expired() {
+        if (enabled) {
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (player != null) {
+                player.playSound(Sounds.ADRENALINEEND);
+            }
         }
-        cooldownTicks = -1;
-        animationTicks = 20;
+        available = false;
+        inUse = false;
+        durationTicks = 0;
+    }
+
+    public static void recharged() {
+        // TODO: opnly sound in if do other methods as well
+        if (!available) {
+            if (enabled) {
+                LocalPlayer player = Minecraft.getInstance().player;
+                if (player != null) {
+                    player.playSound(Sounds.FULLADRENALINE);
+                }
+            }
+            available = true;
+            maxDurationTicks = 0;
+            durationTicks = 0;
+            maxCooldownTicks = 0;
+            cooldownTicks = 0;
+            animationTicks = 20;
+        }
     }
 
     public static int getMiningAbilityDuration(String ability, int level) {
@@ -115,7 +143,7 @@ public class AdrenalineBar {
             case "Pickobulus" -> {return 70-10*level;}
             case "Tunnel Vision" -> {return 130-10*level;}
         }
-        // Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall
+        // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall
         return -1;
     }
 

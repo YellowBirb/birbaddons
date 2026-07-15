@@ -13,6 +13,7 @@ import yellowbirb.birbaddons.client.util.ChatTabs;
 @Mixin(ChatComponent.class)
 public class ChatComponentMixin {
 
+    // Chat Tabs: filter messages from chat
     @WrapMethod(method = "addMessageToDisplayQueue")
     private void onAddVisibleMessage(GuiMessage message, Operation<Void> original) {
         if (true /* TODO: isEnabled */) {
@@ -22,6 +23,7 @@ public class ChatComponentMixin {
         }
     }
 
+    // Chat Tabs: increase Chat History Size
     @ModifyExpressionValue(method =
             {"addMessageToDisplayQueue", "addMessageToQueue", "addRecentChat"},
             at = @At(value = "CONSTANT", args = "intValue=100"))

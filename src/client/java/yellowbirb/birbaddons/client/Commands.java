@@ -28,7 +28,7 @@ public class Commands {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("btclear").executes((context) -> {
                     RenderManager.clear();
-                    context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[Birb's Theodolite] §aCleared all objects drawn in the world"));
+                    context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aCleared all objects drawn in the world"));
                     return 1;
                 }))
         );

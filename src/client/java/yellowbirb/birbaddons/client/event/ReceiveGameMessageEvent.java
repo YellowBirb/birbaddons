@@ -58,7 +58,7 @@ public class ReceiveGameMessageEvent {
         assert player != null;
 
         if (Integer.parseInt(words[9]) == 0) {
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[Birb's Theodolite] §cCannot calculate with 0 degree angle"));
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[BirbAddons] §cCannot calculate with 0 degree angle"));
             return;
         }
 
@@ -74,40 +74,51 @@ public class ReceiveGameMessageEvent {
     private static void onReceiveMAUsedMessage(String msg) {
         if (AdrenalineBar.enabled) {
             String[] words = msg.split("\\s");
+            String ability = "";
             int duration = 0;
             int cooldown = 0;
             switch (words[3]) {
                 case "Mining" -> {
+                    ability = "Mining Speed Boost";
                     duration = AdrenalineBar.getMiningAbilityDuration("Mining Speed Boost", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Mining Speed Boost", 3);
                 }
                 case "Pickobulus" -> {
+                    ability = "Pickobulus";
                     duration = AdrenalineBar.getMiningAbilityDuration("Pickobulus", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Pickobulus", 3);
                 }
                 case "Tunnel" -> {
+                    ability = "Tunnel Vision";
                     duration = AdrenalineBar.getMiningAbilityDuration("Tunnel Vision", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Tunnel Vision", 3);
                 }
                 case "Maniac" -> {
+                    ability = "Maniac Miner";
                     duration = AdrenalineBar.getMiningAbilityDuration("Maniac Miner", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Maniac Miner", 3);
                 }
                 case "Gemstone" -> {
+                    ability = "Gemstone Infusion";
                     duration = AdrenalineBar.getMiningAbilityDuration("Gemstone Infusion", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Gemstone Infusion", 3);
                 }
                 case "Sheer" -> {
+                    ability = "Sheer Force";
                     duration = AdrenalineBar.getMiningAbilityDuration("Sheer Force", 3);
                     cooldown = AdrenalineBar.getMiningAbilityCooldown("Sheer Force", 3);
                 }
             }
-            AdrenalineBar.adrenalineUsed(duration*20, cooldown*20);
+            AdrenalineBar.adrenalineUsed(ability, duration*20, cooldown*20);
         }
     }
 
-    private static void onReceiveMAExpiredMessage() {/* TODO: end adrenaline */}
+    private static void onReceiveMAExpiredMessage() {
+        AdrenalineBar.expired();
+    }
 
-    private static void onReceiveMAAvailableMessage() {}
+    private static void onReceiveMAAvailableMessage() {
+        AdrenalineBar.recharged();
+    }
 
 }

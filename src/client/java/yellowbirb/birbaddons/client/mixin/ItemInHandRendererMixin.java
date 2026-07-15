@@ -20,6 +20,7 @@ import yellowbirb.birbaddons.client.BirbAddonsClient;
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
 
+    // disable drill moving in hand: no swinging the drill when mining
     @WrapMethod(method = "swingArm")
     private void swingArm(float attack, PoseStack poseStack, int invert, HumanoidArm arm, Operation<Void> original) {
         if (true /* TODO: isEnabled */) {
@@ -41,6 +42,7 @@ public class ItemInHandRendererMixin {
         }
     }
 
+    // disable drill moving in hand: doomdrill functionality
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
         if (BirbAddonsClient.drillPosition /* TODO: isEnabled */) {
@@ -60,6 +62,8 @@ public class ItemInHandRendererMixin {
         original.call(mob, itemStack, type, poseStack, submitNodeCollector, lightCoords);
     }
 
+    // disable drill moving in hand: fixed small visual bug if doomdrill is active and switched off of
+    //                               Would otherwise flash into regular position just before changing
     @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
     private boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
         if (true /* TODO: isEnabled */) {
