@@ -15,7 +15,7 @@ public class ChatComponentMixin {
     // Chat Tabs: filter messages from chat
     @WrapMethod(method = "addMessageToDisplayQueue")
     private void onAddVisibleMessage(GuiMessage message, Operation<Void> original) {
-        if (true /* TODO: isEnabled */) {
+        if (ChatTabs.enabled) {
             if (ChatTabs.filter(message.content(), ChatTabs.chatTab)) {
                 original.call(message);
             }
@@ -27,7 +27,7 @@ public class ChatComponentMixin {
             {"addMessageToDisplayQueue", "addMessageToQueue", "addRecentChat"},
             at = @At(value = "CONSTANT", args = "intValue=100"))
     public int modifyMaxHistorySize(int originalMaxSize) {
-        if (true /* TODO: isEnabled */) {
+        if (ChatTabs.enabled) {
             return 512;
         } else {
             return originalMaxSize;

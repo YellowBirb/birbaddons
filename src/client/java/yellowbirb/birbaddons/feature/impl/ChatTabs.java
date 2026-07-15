@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 
 public class ChatTabs {
 
+    public static boolean enabled = true;
     public static Tab chatTab = Tab.ALL;
 
     public static void init() {}
