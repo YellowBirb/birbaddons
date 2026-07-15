@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client;
+package yellowbirb.birbaddons;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
@@ -10,11 +10,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import yellowbirb.birbaddons.client.event.ReceiveGameMessageEvent;
-import yellowbirb.birbaddons.client.hud.AdrenalineBar;
-import yellowbirb.birbaddons.client.render.RenderManager;
-import yellowbirb.birbaddons.client.util.ChatTabs;
-import yellowbirb.birbaddons.client.util.UpdateChecker;
+import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
+import yellowbirb.birbaddons.hud.AdrenalineBar;
+import yellowbirb.birbaddons.render.RenderManager;
+import yellowbirb.birbaddons.util.ChatTabs;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

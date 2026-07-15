@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client;
+package yellowbirb.birbaddons;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.client.event.ReceiveGameMessageEvent;
-import yellowbirb.birbaddons.client.hud.AdrenalineBar;
+import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
+import yellowbirb.birbaddons.hud.AdrenalineBar;
 
 public class DebugCommands {
 

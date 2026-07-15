@@ -1,10 +1,10 @@
-package yellowbirb.birbaddons.client;
+package yellowbirb.birbaddons;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.client.hud.AdrenalineBar;
-import yellowbirb.birbaddons.client.render.RenderManager;
+import yellowbirb.birbaddons.hud.AdrenalineBar;
+import yellowbirb.birbaddons.render.RenderManager;
 
 // TODO: subcommand system
 public class Commands {

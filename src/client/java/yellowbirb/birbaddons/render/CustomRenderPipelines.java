@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.render;
+package yellowbirb.birbaddons.render;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
+import yellowbirb.birbaddons.BirbAddonsClient;
 
 import java.util.Optional;
 

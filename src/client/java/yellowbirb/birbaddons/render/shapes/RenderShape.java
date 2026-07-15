@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.render.shapes;
+package yellowbirb.birbaddons.render.shapes;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;

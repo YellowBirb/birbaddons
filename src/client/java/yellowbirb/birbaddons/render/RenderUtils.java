@@ -1,8 +1,8 @@
-package yellowbirb.birbaddons.client.render;
+package yellowbirb.birbaddons.render;
 
 import net.minecraft.client.player.LocalPlayer;
-import yellowbirb.birbaddons.client.render.shapes.CircleXZ;
-import yellowbirb.birbaddons.client.render.shapes.InterCircleStrip;
+import yellowbirb.birbaddons.render.shapes.CircleXZ;
+import yellowbirb.birbaddons.render.shapes.InterCircleStrip;
 
 import static java.lang.Math.*;
 

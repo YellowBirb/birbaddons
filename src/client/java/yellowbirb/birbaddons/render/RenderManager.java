@@ -1,7 +1,7 @@
-package yellowbirb.birbaddons.client.render;
+package yellowbirb.birbaddons.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import yellowbirb.birbaddons.client.render.shapes.RenderShape;
+import yellowbirb.birbaddons.render.shapes.RenderShape;
 
 import java.util.ArrayList;
 import java.util.List;

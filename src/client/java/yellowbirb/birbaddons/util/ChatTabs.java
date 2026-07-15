@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.util;
+package yellowbirb.birbaddons.util;
 
 import net.minecraft.network.chat.Component;
 

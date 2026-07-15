@@ -1,10 +1,10 @@
-package yellowbirb.birbaddons.client.event;
+package yellowbirb.birbaddons.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.client.hud.AdrenalineBar;
-import yellowbirb.birbaddons.client.render.RenderUtils;
+import yellowbirb.birbaddons.hud.AdrenalineBar;
+import yellowbirb.birbaddons.render.RenderUtils;
 
 public class ReceiveGameMessageEvent {
 

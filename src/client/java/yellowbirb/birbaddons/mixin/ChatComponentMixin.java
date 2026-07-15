@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.mixin;
+package yellowbirb.birbaddons.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -7,8 +7,8 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
-import yellowbirb.birbaddons.client.util.ChatTabs;
+import yellowbirb.birbaddons.BirbAddonsClient;
+import yellowbirb.birbaddons.util.ChatTabs;
 
 @Mixin(ChatComponent.class)
 public class ChatComponentMixin {

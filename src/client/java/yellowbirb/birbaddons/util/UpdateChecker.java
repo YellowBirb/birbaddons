@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.util;
+package yellowbirb.birbaddons.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.io.IOUtils;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
+import yellowbirb.birbaddons.BirbAddonsClient;
 
 import java.io.IOException;
 import java.net.URI;

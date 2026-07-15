@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.mixin;
+package yellowbirb.birbaddons.mixin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
-import yellowbirb.birbaddons.client.util.ChatTabs;
+import yellowbirb.birbaddons.BirbAddonsClient;
+import yellowbirb.birbaddons.util.ChatTabs;
 
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {

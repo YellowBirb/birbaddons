@@ -1,11 +1,11 @@
-package yellowbirb.birbaddons.client.mixin;
+package yellowbirb.birbaddons.mixin;
 
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import yellowbirb.birbaddons.client.render.Renderer;
+import yellowbirb.birbaddons.render.Renderer;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {

@@ -1,10 +1,10 @@
-package yellowbirb.birbaddons.client.render.shapes;
+package yellowbirb.birbaddons.render.shapes;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
-import yellowbirb.birbaddons.client.render.CustomRenderPipelines;
+import yellowbirb.birbaddons.render.CustomRenderPipelines;
 
 public class Box implements RenderShape{
     public final float lengthX;

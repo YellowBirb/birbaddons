@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client;
+package yellowbirb.birbaddons;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

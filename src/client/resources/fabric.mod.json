@@ -24,7 +24,7 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"yellowbirb.birbaddons.client.BirbAddonsClient"
+			"yellowbirb.birbaddons.BirbAddonsClient"
 		]
 	},
 	"mixins": [

@@ -1,4 +1,4 @@
-package yellowbirb.birbaddons.client.mixin;
+package yellowbirb.birbaddons.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import org.spongepowered.asm.mixin.Mixin;
-import yellowbirb.birbaddons.client.BirbAddonsClient;
+import yellowbirb.birbaddons.BirbAddonsClient;
 
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
