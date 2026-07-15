@@ -12,6 +12,8 @@ import yellowbirb.birbaddons.client.Sounds;
 public class AdrenalineBar {
 
     //TODO: ItemEvents#USE
+    // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall
+
     // TODO: figure out how to do this like ughhhhh
 
     // TODO: isEnabled (but like better than this)
@@ -46,8 +48,10 @@ public class AdrenalineBar {
             float barProgress;
             if (inUse) {
                 barProgress = (float) durationTicks / maxDurationTicks;
-            } else {
+            } else if (maxCooldownTicks - maxDurationTicks != 0) {
                 barProgress = 1 - (float) cooldownTicks / (maxCooldownTicks - maxDurationTicks);
+            } else {
+                barProgress = 1.0F;
             }
 
             if (available) {
@@ -78,13 +82,13 @@ public class AdrenalineBar {
     }
 
     public static void adrenalineUsed(String ability, int newDurationTicks, int newCooldownTicks) {
-        LocalPlayer player = Minecraft.getInstance().player;
         if (enabled) {
+            LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 if (ability.equals("Pickobulus")) {
                     player.playSound(Sounds.ADRENALINEACTIVATE);
                 } else {
-                    player.playSound(Sounds.ADRENALINESTART, 0.5F, 1);
+                    player.playSound(Sounds.ADRENALINESTART, 1F, 1);
                 }
             }
         }
@@ -109,7 +113,6 @@ public class AdrenalineBar {
     }
 
     public static void recharged() {
-        // TODO: opnly sound in if do other methods as well
         if (!available) {
             if (enabled) {
                 LocalPlayer player = Minecraft.getInstance().player;
@@ -118,6 +121,7 @@ public class AdrenalineBar {
                 }
             }
             available = true;
+            inUse = false;
             maxDurationTicks = 0;
             durationTicks = 0;
             maxCooldownTicks = 0;
@@ -143,7 +147,6 @@ public class AdrenalineBar {
             case "Pickobulus" -> {return 70-10*level;}
             case "Tunnel Vision" -> {return 130-10*level;}
         }
-        // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall
         return -1;
     }
 

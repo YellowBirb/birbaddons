@@ -21,6 +21,20 @@ public class DebugCommands {
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+                dispatcher.register(ClientCommands.literal("expireAdrenalin").executes((_) -> {
+                    AdrenalineBar.expired();
+                    return 1;
+                }))
+        );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+                dispatcher.register(ClientCommands.literal("rechargeAdrenalin").executes((_) -> {
+                    AdrenalineBar.recharged();
+                    return 1;
+                }))
+        );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("bttesttheodolite")
                         .then(ClientCommands.argument("deltay", IntegerArgumentType.integer())
                                 .then(ClientCommands.argument("angle", IntegerArgumentType.integer())
