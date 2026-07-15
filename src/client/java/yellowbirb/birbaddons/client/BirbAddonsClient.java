@@ -1,11 +1,15 @@
 package yellowbirb.birbaddons.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import yellowbirb.birbaddons.client.event.ReceiveGameMessageEvent;
+import yellowbirb.birbaddons.client.hud.AdrenalineBar;
 
 
 public class BirbAddonsClient implements ClientModInitializer {
@@ -20,12 +24,18 @@ public class BirbAddonsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		LOGGER.info("BirbAddons is initializing :3");
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommands.literal("holddrill").executes((context) -> {
-                    drillPosition = !drillPosition;
-					return 1;
-				}))
-		);
+		Commands.init();
+		DebugCommands.init();
+
+		Sounds.init();
+
+		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), AdrenalineBar::extract);
+
+		AdrenalineBar.init();
+
+		ClientReceiveMessageEvents.GAME.register((message, overlay) -> ReceiveGameMessageEvent.receiveMessage(message));
+
+
 	}
 
 	private static String removeFormatting(String string) {
@@ -44,6 +54,7 @@ public class BirbAddonsClient implements ClientModInitializer {
 		return stringBuilder.toString();
 	}
 
+	// TODO: isEnabled for Chat Tabs, split into own class outside of Main
 	public static boolean chatFilter(Component text) {
 		String message = removeFormatting(text.getString());
 

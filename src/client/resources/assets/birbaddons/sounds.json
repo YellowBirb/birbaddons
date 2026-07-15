@@ -1,0 +1,10 @@
+{
+  "adrenalineactivate": {
+    "subtitle": "sound.birbaddons.adrenalineactivate",
+    "sounds": ["birbaddons:adrenalinebar/adrenalineactivate"]
+  },
+  "fulladrenaline": {
+    "subtitle": "sound.birbaddons.fulladrenaline",
+    "sounds": ["birbaddons:adrenalinebar/fulladrenaline"]
+  }
+}
