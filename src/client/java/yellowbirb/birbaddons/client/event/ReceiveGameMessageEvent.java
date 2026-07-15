@@ -1,7 +1,10 @@
 package yellowbirb.birbaddons.client.event;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import yellowbirb.birbaddons.client.hud.AdrenalineBar;
+import yellowbirb.birbaddons.client.render.RenderUtils;
 
 public class ReceiveGameMessageEvent {
 
@@ -44,7 +47,27 @@ public class ReceiveGameMessageEvent {
         return -1;
     }
 
-    private static void onReceiveTheodoliteMessage(String msg) {}
+    private static void onReceiveTheodoliteMessage(String msg) {
+        String[] words = msg.split("\\s");
+
+        int deltaY = Integer.parseInt(words[4]);
+        double alpha = Math.toRadians(90 - Integer.parseInt(words[9]));
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        // can only be called in-game, so there must for sure be a player riiiiight
+        assert player != null;
+
+        if (Integer.parseInt(words[9]) == 0) {
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[Birb's Theodolite] §cCannot calculate with 0 degree angle"));
+            return;
+        }
+
+        if (words[6].equals("below,")) {
+            deltaY = -deltaY;
+        }
+
+        RenderUtils.drawBoxyRing(alpha, deltaY, player);
+    }
 
     private static void onReceivePeltRewardMessage() {}
 

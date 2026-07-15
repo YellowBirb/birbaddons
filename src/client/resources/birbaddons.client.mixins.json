@@ -5,6 +5,7 @@
 	"client": [
 		"ChatComponentMixin",
 		"ChatScreenMixin",
+		"GameRendererMixin",
 		"ItemInHandRendererMixin",
 		"ItemModelResolverMixin"
 	],
