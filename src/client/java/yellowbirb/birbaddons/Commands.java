@@ -3,7 +3,8 @@ package yellowbirb.birbaddons;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.hud.AdrenalineBar;
+import yellowbirb.birbaddons.feature.impl.AdrenalineBar;
+import yellowbirb.birbaddons.feature.impl.NoDrillSwinging;
 import yellowbirb.birbaddons.render.RenderManager;
 
 // TODO: subcommand system
@@ -13,7 +14,7 @@ public class Commands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("holddrill").executes((_) -> {
-                    BirbAddonsClient.drillPosition = !BirbAddonsClient.drillPosition;
+                    NoDrillSwinging.drillPosition = !NoDrillSwinging.drillPosition;
                     return 1;
                 }))
         );

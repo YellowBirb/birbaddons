@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.network.chat.Component;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
-import yellowbirb.birbaddons.hud.AdrenalineBar;
+import yellowbirb.birbaddons.feature.impl.AdrenalineBar;
 
 public class DebugCommands {
 

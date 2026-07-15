@@ -1,5 +1,7 @@
-package yellowbirb.birbaddons.hud;
+package yellowbirb.birbaddons.feature.impl;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -8,6 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.Sounds;
+import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 
 public class AdrenalineBar {
 
@@ -30,13 +33,40 @@ public class AdrenalineBar {
 
     private static float lastDelta = 1;
 
+    private static final String MA_USED_MESSAGE = "You used your (Mining Speed Boost|Pickobulus|Tunnel Vision|Maniac Miner|Gemstone Infusion|Sheer Force) Pickaxe Ability!";
+    private static final String MA_EXPIRED_MESSAGE = "Your (Mining Speed Boost|Pickobulus|Tunnel Vision|Maniac Miner|Gemstone Infusion|Sheer Force) has expired!";
+    private static final String MA_AVAILABLE_MESSAGE = "(Mining Speed Boost|Pickobulus|Tunnel Vision|Maniac Miner|Gemstone Infusion|Sheer Force) is now available!";
+    // TODO: entered Mineshaft
+
     private static final Identifier adrenalineBarTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinebar.png");
     private static final Identifier adrenalineBarBorderTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinebarborder.png");
     private static final Identifier adrenalineBarBorderFullTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinebarborderfull.png");
     private static final Identifier adrenalineBarFullAnimationTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinefullanimation.png");
 
     public static void init() {
+        ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
+            if (enabled) {
+                String[] words = msg.split("\\s");
+                String ability = "";
+                switch (words[3]) {
+                    case "Mining" -> ability = "Mining Speed Boost";
+                    case "Pickobulus" -> ability = "Pickobulus";
+                    case "Tunnel" -> ability = "Tunnel Vision";
+                    case "Maniac" -> ability = "Maniac Miner";
+                    case "Gemstone" -> ability = "Gemstone Infusion";
+                    case "Sheer" -> ability = "Sheer Force";
+                }
+                int duration = getMiningAbilityDuration(ability, 3);
+                int cooldown = getMiningAbilityCooldown(ability, 3);
+                adrenalineUsed(ability, duration*20, cooldown*20);
+            }
+        });
 
+        ReceiveGameMessageEvent.register(MA_EXPIRED_MESSAGE, (_) -> expired());
+
+        ReceiveGameMessageEvent.register(MA_AVAILABLE_MESSAGE, (_) -> recharged());
+
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "before_chat"), AdrenalineBar::extract);
     }
 
     public static void extract(GuiGraphicsExtractor graphics, DeltaTracker ticktimer) {

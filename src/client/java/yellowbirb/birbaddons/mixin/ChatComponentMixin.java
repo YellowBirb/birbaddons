@@ -7,8 +7,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import yellowbirb.birbaddons.BirbAddonsClient;
-import yellowbirb.birbaddons.util.ChatTabs;
+import yellowbirb.birbaddons.feature.impl.ChatTabs;
 
 @Mixin(ChatComponent.class)
 public class ChatComponentMixin {
@@ -17,7 +16,7 @@ public class ChatComponentMixin {
     @WrapMethod(method = "addMessageToDisplayQueue")
     private void onAddVisibleMessage(GuiMessage message, Operation<Void> original) {
         if (true /* TODO: isEnabled */) {
-            if (ChatTabs.filter(message.content(), BirbAddonsClient.chatTab)) {
+            if (ChatTabs.filter(message.content(), ChatTabs.chatTab)) {
                 original.call(message);
             }
         }

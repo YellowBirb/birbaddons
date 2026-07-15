@@ -1,8 +1,12 @@
-package yellowbirb.birbaddons.util;
+package yellowbirb.birbaddons.feature.impl;
 
 import net.minecraft.network.chat.Component;
 
 public class ChatTabs {
+
+    public static Tab chatTab = Tab.ALL;
+
+    public static void init() {}
 
     private static String removeFormatting(String string) {
         StringBuilder stringBuilder = new StringBuilder(string);
@@ -20,7 +24,6 @@ public class ChatTabs {
         return stringBuilder.toString();
     }
 
-    // TODO: isEnabled for Chat Tabs, split into own class outside of Main
     public static boolean filter(Component text, Tab tab) {
         String message = removeFormatting(text.getString());
 

@@ -6,6 +6,7 @@ import yellowbirb.birbaddons.render.shapes.RenderShape;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: redo this shit, allow for removal of specific Shapes in case the need to render more than just Theodolite stuffs appears
 public class RenderManager {
 
     private static final List<RenderShape> shapeList = new ArrayList<>();

@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import yellowbirb.birbaddons.BirbAddonsClient;
-import yellowbirb.birbaddons.util.ChatTabs;
+import yellowbirb.birbaddons.feature.impl.ChatTabs;
 
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {
@@ -29,24 +28,26 @@ public abstract class ChatScreenMixin extends Screen {
     // Chat Tabs: Insert Tab Buttons into Chat Screen
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
-        Minecraft client = Minecraft.getInstance();
-        ChatComponent hud = client.gui.getChat();
-        for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
-            String message = "X";
-            switch (chatTab) {
-                case ALL -> message = "A";
-                case PARTY -> message = "P";
-                case GUILD -> message = "G";
-                case PRIVATE -> message = "PM";
-                case COOP -> message = "CC";
-            }
-            Button tabButton = Button.builder(Component.literal(message), (btn) -> {
-                BirbAddonsClient.chatTab = chatTab;
-                hud.rescaleChat();
-                client.schedule(() -> setFocused(input));
-            }).bounds(5 + chatTab.ordinal() * 22, this.height - ChatComponent.getHeight(Minecraft.getInstance().options.chatHeightFocused().get()) - 40 - 20 - 5, 20, 20).build();
+        if (true /* TODO: isEnabled */) {
+            Minecraft client = Minecraft.getInstance();
+            ChatComponent hud = client.gui.getChat();
+            for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
+                String message = "X";
+                switch (chatTab) {
+                    case ALL -> message = "A";
+                    case PARTY -> message = "P";
+                    case GUILD -> message = "G";
+                    case PRIVATE -> message = "PM";
+                    case COOP -> message = "CC";
+                }
+                Button tabButton = Button.builder(Component.literal(message), (btn) -> {
+                    ChatTabs.chatTab = chatTab;
+                    hud.rescaleChat();
+                    client.schedule(() -> setFocused(input));
+                }).bounds(5 + chatTab.ordinal() * 22, this.height - ChatComponent.getHeight(Minecraft.getInstance().options.chatHeightFocused().get()) - 40 - 20 - 5, 20, 20).build();
 
-            addRenderableWidget(tabButton);
+                addRenderableWidget(tabButton);
+            }
         }
     }
 
@@ -54,6 +55,8 @@ public abstract class ChatScreenMixin extends Screen {
     //            otherwise Buttons would be focused, not allowing user to type
     @Inject(at = @At("HEAD"), method = "keyPressed")
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-        setFocused(this.input);
+        if (true /* TODO: isEnabled */) {
+            setFocused(this.input);
+        }
     }
 }
