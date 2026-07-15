@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import yellowbirb.birbaddons.client.BirbAddonsClient;
-import yellowbirb.birbaddons.client.BirbAddonsClient.ChatTab;
+import yellowbirb.birbaddons.client.util.ChatTabs;
 
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {
@@ -30,7 +30,7 @@ public abstract class ChatScreenMixin extends Screen {
     private void onInit(CallbackInfo ci) {
         Minecraft client = Minecraft.getInstance();
         ChatComponent hud = client.gui.getChat();
-        for (ChatTab chatTab : ChatTab.values()) {
+        for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
             String message = "X";
             switch (chatTab) {
                 case ALL -> message = "A";
