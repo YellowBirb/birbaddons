@@ -7,6 +7,7 @@ import net.minecraft.world.item.component.CustomData;
 
 public class NoDrillSwinging {
 
+    public static boolean enabled = true;
     public static boolean drillPosition = false;
 
     public static void init() {}

@@ -28,7 +28,7 @@ public abstract class ChatScreenMixin extends Screen {
     // Chat Tabs: Insert Tab Buttons into Chat Screen
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
-        if (true /* TODO: isEnabled */) {
+        if (ChatTabs.enabled) {
             Minecraft client = Minecraft.getInstance();
             ChatComponent hud = client.gui.getChat();
             for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
@@ -40,7 +40,7 @@ public abstract class ChatScreenMixin extends Screen {
                     case PRIVATE -> message = "PM";
                     case COOP -> message = "CC";
                 }
-                Button tabButton = Button.builder(Component.literal(message), (btn) -> {
+                Button tabButton = Button.builder(Component.literal(message), (_) -> {
                     ChatTabs.chatTab = chatTab;
                     hud.rescaleChat();
                     client.schedule(() -> setFocused(input));
@@ -55,7 +55,7 @@ public abstract class ChatScreenMixin extends Screen {
     //            otherwise Buttons would be focused, not allowing user to type
     @Inject(at = @At("HEAD"), method = "keyPressed")
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-        if (true /* TODO: isEnabled */) {
+        if (ChatTabs.enabled) {
             setFocused(this.input);
         }
     }

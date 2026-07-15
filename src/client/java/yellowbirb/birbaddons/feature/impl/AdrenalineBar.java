@@ -45,21 +45,19 @@ public class AdrenalineBar {
 
     public static void init() {
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
-            if (enabled) {
-                String[] words = msg.split("\\s");
-                String ability = "";
-                switch (words[3]) {
-                    case "Mining" -> ability = "Mining Speed Boost";
-                    case "Pickobulus" -> ability = "Pickobulus";
-                    case "Tunnel" -> ability = "Tunnel Vision";
-                    case "Maniac" -> ability = "Maniac Miner";
-                    case "Gemstone" -> ability = "Gemstone Infusion";
-                    case "Sheer" -> ability = "Sheer Force";
-                }
-                int duration = getMiningAbilityDuration(ability, 3);
-                int cooldown = getMiningAbilityCooldown(ability, 3);
-                adrenalineUsed(ability, duration*20, cooldown*20);
+            String[] words = msg.split("\\s");
+            String ability = "";
+            switch (words[3]) {
+                case "Mining" -> ability = "Mining Speed Boost";
+                case "Pickobulus" -> ability = "Pickobulus";
+                case "Tunnel" -> ability = "Tunnel Vision";
+                case "Maniac" -> ability = "Maniac Miner";
+                case "Gemstone" -> ability = "Gemstone Infusion";
+                case "Sheer" -> ability = "Sheer Force";
             }
+            int duration = getMiningAbilityDuration(ability, 3);
+            int cooldown = getMiningAbilityCooldown(ability, 3);
+            adrenalineUsed(ability, duration*20, cooldown*20);
         });
 
         ReceiveGameMessageEvent.register(MA_EXPIRED_MESSAGE, (_) -> expired());
