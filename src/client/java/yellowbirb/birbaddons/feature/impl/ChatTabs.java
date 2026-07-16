@@ -1,10 +1,12 @@
 package yellowbirb.birbaddons.feature.impl;
 
 import net.minecraft.network.chat.Component;
+import yellowbirb.birbaddons.config.ConfigBoolean;
 
 public class ChatTabs {
 
-    public static boolean enabled = true;
+    public static final String ID = "ChatTabs";
+    public static final ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
     public static Tab chatTab = Tab.ALL;
 
     public static void init() {}

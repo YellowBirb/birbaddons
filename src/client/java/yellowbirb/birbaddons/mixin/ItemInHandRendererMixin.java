@@ -21,7 +21,7 @@ public class ItemInHandRendererMixin {
     // disable drill moving in hand: no swinging the drill when mining
     @WrapMethod(method = "swingArm")
     private void swingArm(float attack, PoseStack poseStack, int invert, HumanoidArm arm, Operation<Void> original) {
-        if (NoDrillSwinging.enabled) {
+        if (NoDrillSwinging.enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 if (!NoDrillSwinging.isDrill(Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND))) {
@@ -38,7 +38,7 @@ public class ItemInHandRendererMixin {
     // disable drill moving in hand: doomdrill functionality
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
-        if (NoDrillSwinging.drillPosition) {
+        if (NoDrillSwinging.drillPosition.get()) {
             if (NoDrillSwinging.isDrill(itemStack)) {
                 poseStack.translate(-0.2815F, 0.125F, -0.3F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-21.318F));
@@ -53,7 +53,7 @@ public class ItemInHandRendererMixin {
     //                               Would otherwise flash into regular position just before changing
     @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
     private boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
-        if (NoDrillSwinging.isDrill(currentlyVisibleItem) && NoDrillSwinging.drillPosition) {
+        if (NoDrillSwinging.drillPosition.get() && NoDrillSwinging.isDrill(currentlyVisibleItem)) {
             return false;
         }
         return original.call(currentlyVisibleItem, expectedItem);

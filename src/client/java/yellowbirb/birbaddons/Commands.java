@@ -14,14 +14,14 @@ public class Commands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("holddrill").executes((_) -> {
-                    NoDrillSwinging.drillPosition = !NoDrillSwinging.drillPosition;
+                    NoDrillSwinging.drillPosition.set(!NoDrillSwinging.drillPosition.get());
                     return 1;
                 }))
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("toggleadrenaline").executes((_) -> {
-                    AdrenalineBar.enabled = !AdrenalineBar.enabled;
+                    AdrenalineBar.enabled.set(!AdrenalineBar.enabled.get());
                     return 1;
                 }))
         );

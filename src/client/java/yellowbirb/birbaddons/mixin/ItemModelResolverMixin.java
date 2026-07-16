@@ -12,7 +12,7 @@ public class ItemModelResolverMixin {
     // disable drill moving in hand: stop swap animation that plays when fuel/durability decreases
     @WrapMethod(method = "swapAnimationScale")
     public float swapAnimationScale(ItemStack stack, Operation<Float> original) {
-        if (NoDrillSwinging.enabled) {
+        if (NoDrillSwinging.enabled.get()) {
             if (NoDrillSwinging.isDrill(stack)) {
                 return 0.0F;
             }

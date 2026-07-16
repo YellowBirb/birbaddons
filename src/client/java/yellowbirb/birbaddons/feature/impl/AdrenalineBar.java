@@ -10,17 +10,18 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.Sounds;
+import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 
 public class AdrenalineBar {
 
-    //TODO: ItemEvents#USE
+    //TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall
 
     // TODO: figure out how to do this like ughhhhh
 
-    // TODO: isEnabled (but like better than this)
-    public static boolean enabled = false;
+    public static final String ID = "AdrenalineBar";
+    public static final ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", false);
 
     private static boolean available = true;
     private static boolean inUse = false;
@@ -68,7 +69,7 @@ public class AdrenalineBar {
     }
 
     public static void extract(GuiGraphicsExtractor graphics, DeltaTracker ticktimer) {
-        if (enabled) {
+        if (enabled.get()) {
             int x = 100;
             int y = 100;
             float mult = 1.0F;
@@ -110,7 +111,7 @@ public class AdrenalineBar {
     }
 
     public static void adrenalineUsed(String ability, int newDurationTicks, int newCooldownTicks) {
-        if (enabled) {
+        if (enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 if (ability.equals("Pickobulus")) {
@@ -129,7 +130,7 @@ public class AdrenalineBar {
     }
 
     public static void expired() {
-        if (enabled) {
+        if (enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 player.playSound(Sounds.ADRENALINEEND);
@@ -142,7 +143,7 @@ public class AdrenalineBar {
 
     public static void recharged() {
         if (!available) {
-            if (enabled) {
+            if (enabled.get()) {
                 LocalPlayer player = Minecraft.getInstance().player;
                 if (player != null) {
                     player.playSound(Sounds.FULLADRENALINE);

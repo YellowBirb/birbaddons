@@ -4,13 +4,15 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import yellowbirb.birbaddons.config.ConfigBoolean;
 
 public class NoDrillSwinging {
 
-    public static boolean enabled = true;
+    public static final String ID = "NoDrillSwinging";
+    public static ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
 
     // TODO: split to DoomDrill
-    public static boolean drillPosition = false;
+    public static ConfigBoolean drillPosition = new ConfigBoolean(ID, "drillPosition", false);
 
     public static void init() {}
 

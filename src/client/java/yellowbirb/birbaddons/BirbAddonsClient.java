@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import yellowbirb.birbaddons.config.Config;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Features;
 import yellowbirb.birbaddons.render.RenderManager;
@@ -20,11 +21,11 @@ public class BirbAddonsClient implements ClientModInitializer {
 	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "";
 	private static final AtomicBoolean lookedForUpdate = new AtomicBoolean(false);
 
-	// TODO: try to completely isolate features?
-
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("BirbAddons is initializing :3");
+
+		Config.load();
 
 		LevelRenderEvents.END_MAIN.register(RenderManager::draw);
 

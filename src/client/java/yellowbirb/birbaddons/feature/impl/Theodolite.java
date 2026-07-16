@@ -5,20 +5,22 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.render.RenderManager;
 import yellowbirb.birbaddons.render.RenderUtils;
 
 public class Theodolite {
 
-    public static boolean enabled = true;
+    public static final String ID = "birbs-theodolite";
+    public static ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
 
     private static final String THEODOLITE_MESSAGE = "The target is around [0-9]+ blocks (below|above), at a [1-9][0-9]? degrees angle!";
     private static final String PELT_REWARD_MESSAGE = "Killing the animal rewarded you [1-9][0-9]? pelts.";
 
     public static void init() {
         ReceiveGameMessageEvent.register(THEODOLITE_MESSAGE, (msg) -> {
-            if (enabled) {
+            if (enabled.get()) {
                 String[] words = msg.split("\\s");
 
                 int deltaY = Integer.parseInt(words[4]);
@@ -48,7 +50,7 @@ public class Theodolite {
     }
 
     private static void clearIfEnabled() {
-        if (enabled) {
+        if (enabled.get()) {
             RenderManager.clear();
         }
     }

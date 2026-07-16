@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
+// TODO: make EVERYTHING better
+
 public class UpdateChecker {
 
     public static void checkForUpdate(String apiLink) {
@@ -73,7 +75,6 @@ public class UpdateChecker {
         }
     }
 
-    // TODO: make better
     // assumes no characters other than numbers and dots in version string
     private static boolean isLesserVerThan(String ver1, String ver2) {
         String[] ver1arr = ver1.split("\\.");
