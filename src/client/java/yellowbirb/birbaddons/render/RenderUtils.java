@@ -1,34 +1,16 @@
 package yellowbirb.birbaddons.render;
 
-import net.minecraft.client.player.LocalPlayer;
 import yellowbirb.birbaddons.render.shapes.CircleXZ;
 import yellowbirb.birbaddons.render.shapes.InterCircleStrip;
 
 import static java.lang.Math.*;
 
 public class RenderUtils {
-    public static void drawBoxyRing(double alpha, int deltaY, LocalPlayer player) {
-
-        float angleMargin = 2.5F;
-        float heightMargin = 2.5F;
-
-        int boxyRingInnerColorR = 255;
-        int boxyRingInnerColorG = 0;
-        int boxyRingInnerColorB = 0;
-        int boxyRingInnerColorA = 255;
-        boolean boxyRingInnerVisibleThroughWalls = true;
-
-        int boxyRingOuterCornerColorR = 0;
-        int boxyRingOuterCornerColorG = 255;
-        int boxyRingOuterCornerColorB = 0;
-        int boxyRingOuterCornerColorA = 255;
-        boolean boxyRingOuterCornerVisibleThroughWalls = false;
-
-        int boxyRingOuterPlaneColorR = 0;
-        int boxyRingOuterPlaneColorG = 255;
-        int boxyRingOuterPlaneColorB = 0;
-        int boxyRingOuterPlaneColorA = 50;
-        boolean boxyRingOuterPlaneVisibleThroughWalls = false;
+    public static void drawBoxyRing(double alpha, int deltaY, float playerX, float playerY, float playerZ,
+                                    float angleMargin, float heightMargin,
+                                    int boxyRingInnerColorR, int boxyRingInnerColorG, int boxyRingInnerColorB, int boxyRingInnerColorA, boolean boxyRingInnerVisibleThroughWalls,
+                                    int boxyRingOuterCornerColorR, int boxyRingOuterCornerColorG, int boxyRingOuterCornerColorB, int boxyRingOuterCornerColorA, boolean boxyRingOuterCornerVisibleThroughWalls,
+                                    int boxyRingOuterPlaneColorR, int boxyRingOuterPlaneColorG, int boxyRingOuterPlaneColorB, int boxyRingOuterPlaneColorA, boolean boxyRingOuterPlaneVisibleThroughWalls) {
 
         double margin_rad = Math.toRadians(angleMargin);
 
@@ -39,10 +21,6 @@ public class RenderUtils {
 
         float radius3_1 = (float) (Math.abs(Math.tan(alpha - margin_rad) * (deltaY + heightMargin)));
         float radius3_2 = (float) (Math.abs(Math.tan(alpha - margin_rad) * (deltaY - heightMargin)));
-
-        float playerX = (float) player.getX();
-        float playerY = (float) player.getY();
-        float playerZ = (float) player.getZ();
 
         float segmentLength = 0.5f;
         // resampling segmentAmount to draw clean InterCircleStrips

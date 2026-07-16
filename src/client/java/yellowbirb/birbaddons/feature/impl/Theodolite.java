@@ -39,7 +39,32 @@ public class Theodolite {
                     deltaY = -deltaY;
                 }
 
-                RenderUtils.drawBoxyRing(alpha, deltaY, player);
+                float angleMargin = 2.5F;
+                float heightMargin = 2.5F;
+
+                int boxyRingInnerColorR = 255;
+                int boxyRingInnerColorG = 0;
+                int boxyRingInnerColorB = 0;
+                int boxyRingInnerColorA = 255;
+                boolean boxyRingInnerVisibleThroughWalls = true;
+
+                int boxyRingOuterCornerColorR = 0;
+                int boxyRingOuterCornerColorG = 255;
+                int boxyRingOuterCornerColorB = 0;
+                int boxyRingOuterCornerColorA = 255;
+                boolean boxyRingOuterCornerVisibleThroughWalls = false;
+
+                int boxyRingOuterPlaneColorR = 0;
+                int boxyRingOuterPlaneColorG = 255;
+                int boxyRingOuterPlaneColorB = 0;
+                int boxyRingOuterPlaneColorA = 50;
+                boolean boxyRingOuterPlaneVisibleThroughWalls = false;
+
+                RenderUtils.drawBoxyRing(alpha, deltaY, (float) player.getX(), (float) player.getY(), (float) player.getZ(),
+                        angleMargin, heightMargin,
+                        boxyRingInnerColorR, boxyRingInnerColorG, boxyRingInnerColorB, boxyRingInnerColorA, boxyRingInnerVisibleThroughWalls,
+                        boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls,
+                        boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls);
             }
         });
 
