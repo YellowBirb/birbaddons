@@ -28,6 +28,7 @@ public class AdrenalineBar {
 
     private static long abilityStartMillis = 0;
     private static long durationEndMillis = 0;
+    private static long durationEndConfirmedMillis = 0;
     private static long cooldownEndMillis = 0;
     private static long animationStartMillis = 0;
 
@@ -90,13 +91,13 @@ public class AdrenalineBar {
     private static float getBarProgress() {
         float barProgress;
         long durationDivisor = durationEndMillis - abilityStartMillis;
-        long cooldownDivisor = cooldownEndMillis - durationEndMillis;
+        long cooldownDivisor = cooldownEndMillis - durationEndConfirmedMillis;
         if (available || durationDivisor == 0 || cooldownDivisor == 0) {
             barProgress = 1.0F;
         } else if (inUse) {
             barProgress = Math.max(0, (float) (durationEndMillis - Util.getMillis()) / (durationDivisor));
         } else {
-            barProgress = Math.min(1, (float) (Util.getMillis() - durationEndMillis) / (cooldownDivisor));
+            barProgress = Math.min(1, (float) (Util.getMillis() - durationEndConfirmedMillis) / (cooldownDivisor));
         }
         return barProgress;
     }
@@ -135,8 +136,8 @@ public class AdrenalineBar {
                 player.playSound(Sounds.ADRENALINEEND);
             }
         }
-        available = false;
         inUse = false;
+        durationEndConfirmedMillis = Util.getMillis();
     }
 
     public static void recharged() {
@@ -148,7 +149,6 @@ public class AdrenalineBar {
                 }
             }
             available = true;
-            inUse = false;
             animationStartMillis = Util.getMillis();
         }
     }

@@ -2,9 +2,9 @@ package yellowbirb.birbaddons.feature.impl;
 
 import yellowbirb.birbaddons.config.ConfigBoolean;
 
-public class NoDrillSwinging {
+public class DoomDrill {
 
-    public static final String ID = "NoDrillSwinging";
+    public static final String ID = "DoomDrill";
     public static ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
 
     public static void init() {}
