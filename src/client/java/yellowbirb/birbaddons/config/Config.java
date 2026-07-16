@@ -12,6 +12,8 @@ import java.nio.file.Path;
 
 public class Config {
 
+    // Heavy "Inspiration" from https://github.com/WhatYouThing/NoFrills
+
     private static final Path configDir = FabricLoader.getInstance().getConfigDir().resolve(BirbAddonsClient.MOD_ID);
     private static final Path configFile = configDir.resolve("config.json");
     private static JsonObject configJson = new JsonObject();

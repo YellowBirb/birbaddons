@@ -27,6 +27,8 @@ public class ChatTabs {
         return stringBuilder.toString();
     }
 
+    // Heavy "Inspiration" from  https://github.com/skytils
+
     public static boolean filter(Component text, Tab tab) {
         String message = removeFormatting(text.getString());
 
