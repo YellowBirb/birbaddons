@@ -12,7 +12,7 @@ import yellowbirb.birbaddons.render.RenderUtils;
 
 public class Theodolite {
 
-    public static final String ID = "birbs-theodolite";
+    public static final String ID = "Theodolite";
     public static ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
 
     private static final String THEODOLITE_MESSAGE = "The target is around [0-9]+ blocks (below|above), at a [1-9][0-9]? degrees angle!";
@@ -31,7 +31,7 @@ public class Theodolite {
                 assert player != null;
 
                 if (Integer.parseInt(words[9]) == 0) {
-                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[BirbAddons] §cCannot calculate with 0 degree angle"));
+                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCannot calculate with 0 degree angle"));
                     return;
                 }
 

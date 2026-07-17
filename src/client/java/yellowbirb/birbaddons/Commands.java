@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
 import yellowbirb.birbaddons.feature.impl.AdrenalineBar;
-import yellowbirb.birbaddons.feature.impl.NoDrillSwinging;
+import yellowbirb.birbaddons.feature.impl.DoomDrill;
 import yellowbirb.birbaddons.render.RenderManager;
 
 // TODO: subcommand system
@@ -14,7 +14,7 @@ public class Commands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("holddrill").executes((_) -> {
-                    NoDrillSwinging.drillPosition.set(!NoDrillSwinging.drillPosition.get());
+                    DoomDrill.enabled.set(!DoomDrill.enabled.get());
                     return 1;
                 }))
         );
@@ -29,7 +29,7 @@ public class Commands {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("btclear").executes((context) -> {
                     RenderManager.clear();
-                    context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aCleared all objects drawn in the world"));
+                    context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §rCleared all objects drawn in the world"));
                     return 1;
                 }))
         );

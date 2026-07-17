@@ -53,12 +53,12 @@ public class UpdateChecker {
             }
 
             if (highestVer.isEmpty()) {
-                player.sendSystemMessage(Component.literal("§3[BirbAddons] §cCould not find any version of the mod for this Minecraft Version in Modrinth API!"));
+                player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCould not find any version of the mod for this Minecraft Version in Modrinth API!"));
                 return;
             }
 
             // give player link to highest found version if it is greater than version found in Mod's Metadata
-            if (isLesserVerThan(FabricLoader.getInstance().getModContainer(BirbAddonsClient.MOD_ID).get().getMetadata().getVersion().getFriendlyString(), highestVer)) {
+            if (isLesserVerThan(FabricLoader.getInstance().getModContainer(BirbAddonsClient.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString(), highestVer)) {
                 // TODO: new link
                 String newVerLink = "https://modrinth.com/mod/birbaddons/version/" + highestVerID;
                 URI verURI = new URI(newVerLink);
@@ -67,11 +67,11 @@ public class UpdateChecker {
                         .applyFormats(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                         .withClickEvent(new ClickEvent.OpenUrl(verURI))
                         .withHoverEvent(new HoverEvent.ShowText(Component.literal(newVerLink))));
-                player.sendSystemMessage(Component.literal("§3[BirbAddons] §aFound new version §r§e" + highestVer + "§a of BirbAddons §r").append(link));
+                player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons ").append(link));
             }
         } catch (URISyntaxException | IOException e) {
             BirbAddonsClient.LOGGER.error(e.toString());
-            player.sendSystemMessage(Component.literal("§3[BirbAddons] §cAn error occurred while trying to check for updates!"));
+            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rAn error occurred while trying to check for updates!"));
         }
     }
 

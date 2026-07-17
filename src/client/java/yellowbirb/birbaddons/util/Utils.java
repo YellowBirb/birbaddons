@@ -1,11 +1,11 @@
-package yellowbirb.birbaddons;
+package yellowbirb.birbaddons.util;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
-public class Util {
+public class Utils {
 
     public static boolean isDrill(ItemStack itemStack) {
         CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);

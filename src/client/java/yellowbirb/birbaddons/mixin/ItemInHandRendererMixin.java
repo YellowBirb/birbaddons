@@ -13,7 +13,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import org.spongepowered.asm.mixin.Mixin;
-import yellowbirb.birbaddons.Util;
+import yellowbirb.birbaddons.util.Utils;
 import yellowbirb.birbaddons.feature.impl.DoomDrill;
 import yellowbirb.birbaddons.feature.impl.NoDrillSwinging;
 
@@ -26,7 +26,7 @@ public class ItemInHandRendererMixin {
         if (NoDrillSwinging.enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                if (!Util.isDrill(Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND))) {
+                if (!Utils.isDrill(Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND))) {
                     original.call(attack, poseStack, invert, arm);
                 }
             } else {
@@ -41,7 +41,7 @@ public class ItemInHandRendererMixin {
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
         if (DoomDrill.enabled.get()) {
-            if (Util.isDrill(itemStack)) {
+            if (Utils.isDrill(itemStack)) {
                 poseStack.translate(-0.2815F, 0.125F, -0.3F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-21.318F));
                 poseStack.mulPose(Axis.XP.rotationDegrees(19.3F));
@@ -55,7 +55,7 @@ public class ItemInHandRendererMixin {
     //                               Would otherwise flash into regular position just before changing
     @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
     private boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
-        if (DoomDrill.enabled.get() && Util.isDrill(currentlyVisibleItem)) {
+        if (DoomDrill.enabled.get() && Utils.isDrill(currentlyVisibleItem)) {
             return false;
         }
         return original.call(currentlyVisibleItem, expectedItem);

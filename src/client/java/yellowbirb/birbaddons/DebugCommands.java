@@ -47,13 +47,13 @@ public class DebugCommands {
         int deltay = IntegerArgumentType.getInteger(context, "deltay");
         int angle = IntegerArgumentType.getInteger(context, "angle");
         if (deltay == 0) {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aYou are at the exact height!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §rYou are at the exact height!"));
             ReceiveGameMessageEvent.receiveMessage(Component.literal("You are at the exact height!"));
         } else if (deltay > 0) {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aThe target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §rThe target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
             ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
         } else {
-            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §aThe target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("§3[BirbAddons] §rThe target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
             ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
         }
 
