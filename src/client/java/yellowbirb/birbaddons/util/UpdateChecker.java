@@ -19,60 +19,74 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
-// TODO: make EVERYTHING better
-
 public class UpdateChecker {
 
     public static void checkForUpdate(String apiLink) {
         LocalPlayer player = Minecraft.getInstance().player;
-        // can only be called in-game, so there must for sure be a player riiiiight
         assert player != null;
-
-        try {
-            // get Versions from API
-            String jsonString = IOUtils.toString(new URI(apiLink).toURL().openStream(), StandardCharsets.UTF_8);
-            JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-            String mcVer = SharedConstants.getCurrentVersion().name();
-            String highestVer = "";
-            String highestVerID = "";
-
-            // find latest version
-            // assumes latest version is always first in Modrinth API
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonArray gameVers = jsonArray.get(i).getAsJsonObject().get("game_versions").getAsJsonArray();
-                for (int j = 0; j < gameVers.size(); j++) {
-                    if (gameVers.get(j).getAsString().equals(mcVer)) {
-                        highestVer = jsonArray.get(i).getAsJsonObject().get("version_number").getAsString();
-                        highestVerID = jsonArray.get(i).getAsJsonObject().get("id").getAsString();
-                        break;
-                    }
-                }
-                if (!highestVer.isEmpty()) {
-                    break;
-                }
-            }
-
-            if (highestVer.isEmpty()) {
-                player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCould not find any version of the mod for this Minecraft Version in Modrinth API!"));
-                return;
-            }
+        String ver = getHighestModrinthVersion(apiLink, player);
+        if (!ver.isEmpty()) {
+            String[] vers = ver.split("\\|");
+            String highestVer = vers[0];
+            String highestVerID = vers[1];
 
             // give player link to highest found version if it is greater than version found in Mod's Metadata
             if (isLesserVerThan(FabricLoader.getInstance().getModContainer(BirbAddonsClient.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString(), highestVer)) {
                 // TODO: new link
                 String newVerLink = "https://modrinth.com/mod/birbaddons/version/" + highestVerID;
-                URI verURI = new URI(newVerLink);
-                MutableComponent link = Component.literal("here");
-                link.setStyle(link.getStyle()
-                        .applyFormats(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
-                        .withClickEvent(new ClickEvent.OpenUrl(verURI))
-                        .withHoverEvent(new HoverEvent.ShowText(Component.literal(newVerLink))));
-                player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons ").append(link));
+                try {
+                    URI verURI = new URI(newVerLink);
+                    MutableComponent link = Component.literal("here");
+                    link.setStyle(link.getStyle()
+                            .applyFormats(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
+                            .withClickEvent(new ClickEvent.OpenUrl(verURI))
+                            .withHoverEvent(new HoverEvent.ShowText(Component.literal(newVerLink))));
+                    player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons ").append(link));
+                } catch (URISyntaxException e) {
+                    BirbAddonsClient.LOGGER.error("Error while creating Modrinth link to newer mod version", e);
+                    player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons but could not create link"));
+                }
+
             }
-        } catch (URISyntaxException | IOException e) {
-            BirbAddonsClient.LOGGER.error(e.toString());
-            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rAn error occurred while trying to check for updates!"));
         }
+
+    }
+
+    private static String getHighestModrinthVersion(String apiLink, LocalPlayer player) {
+        // get Versions from API
+        String jsonString = "";
+        try {
+            jsonString = IOUtils.toString(new URI(apiLink).toURL().openStream(), StandardCharsets.UTF_8);
+        } catch (URISyntaxException | IOException e) {
+            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rError while fetching mod versions from Modrinth"));
+            BirbAddonsClient.LOGGER.error("Error while fetching mod versions from Modrinth", e);
+        }
+        JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
+        String mcVer = SharedConstants.getCurrentVersion().name();
+        String highestVer = "";
+        String highestVerID = "";
+
+        // find latest version
+        // assumes latest version is always first in Modrinth API
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonArray gameVers = jsonArray.get(i).getAsJsonObject().get("game_versions").getAsJsonArray();
+            for (int j = 0; j < gameVers.size(); j++) {
+                if (gameVers.get(j).getAsString().equals(mcVer)) {
+                    highestVer = jsonArray.get(i).getAsJsonObject().get("version_number").getAsString();
+                    highestVerID = jsonArray.get(i).getAsJsonObject().get("id").getAsString();
+                    break;
+                }
+            }
+            if (!highestVer.isEmpty()) {
+                break;
+            }
+        }
+
+        if (highestVer.isEmpty()) {
+            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCould not find any version of the mod for this Minecraft Version in Modrinth API"));
+            return "";
+        }
+        return highestVer+"|"+highestVerID;
     }
 
     // assumes no characters other than numbers and dots in version string
