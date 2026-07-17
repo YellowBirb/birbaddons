@@ -46,6 +46,4 @@ public class BirbAddonsClient implements ClientModInitializer {
 			}
 		}).start());*/
 	}
-
-
 }

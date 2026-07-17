@@ -79,11 +79,11 @@ public class AdrenalineBar {
             } else {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderTexture, x, y, 0, 6, Math.round(104*mult), Math.round(32*mult), 104, 32, 104, 480);
             }
-            graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarTexture, x+12, y+14, 0, 18, Math.round(80*mult*barProgress), Math.round(8*mult), Math.round(80*barProgress), 8, 80, 36);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarTexture, x+Math.round(12*mult), y+Math.round(14*mult), 0, 18, Math.round(80*mult*barProgress), Math.round(8*mult), Math.round(80*barProgress), 8, 80, 36);
 
             int animFrame = (int) Math.floor((double) (Util.getMillis() - animationStartMillis) / 100);
             if (animFrame < 10) {
-                graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarFullAnimationTexture, x-34, y-19, 0, animFrame*70, Math.round(172*mult), Math.round(70*mult), 172, 70, 172, 700);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarFullAnimationTexture, x-Math.round(34*mult), y-Math.round(19*mult), 0, animFrame*70, Math.round(172*mult), Math.round(70*mult), 172, 70, 172, 700);
             }
         }
     }
