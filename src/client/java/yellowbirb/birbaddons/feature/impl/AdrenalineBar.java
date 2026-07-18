@@ -46,6 +46,7 @@ public class AdrenalineBar extends Feature {
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
             String[] words = msg.split("\\s");
             String ability = "";
+            // TODO: extract switch into method
             switch (words[3]) {
                 case "Mining" -> ability = "Mining Speed Boost";
                 case "Pickobulus" -> ability = "Pickobulus";
@@ -69,6 +70,7 @@ public class AdrenalineBar extends Feature {
     public static void extract(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
         if (adrenalineBar.enabled.get()) {
+            // TODO: ConfigValues for those (Vec2D?, float)
             int x = 100;
             int y = 100;
             float mult = 1.0F;
