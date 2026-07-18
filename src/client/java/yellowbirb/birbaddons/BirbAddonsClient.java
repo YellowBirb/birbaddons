@@ -14,8 +14,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class BirbAddonsClient implements ClientModInitializer {
+	private static BirbAddonsClient instance;
 	public static final String MOD_ID = "birbaddons";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public Features features;
 
 	// TODO: get link
 	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "";
@@ -23,6 +26,8 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		instance = this;
+
 		LOGGER.info("BirbAddons is initializing :3");
 
 		Config.load();
@@ -36,7 +41,7 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 		Sounds.init();
 
-		Features.init();
+		features = new Features();
 
 		// TODO: get link
 		/*ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> new Thread(() -> {
@@ -45,5 +50,9 @@ public class BirbAddonsClient implements ClientModInitializer {
 				UpdateChecker.checkForUpdate(MODRINTH_PROJECT_VERSION_API_LINK);
 			}
 		}).start());*/
+	}
+
+	public static BirbAddonsClient getInstance() {
+		return instance;
 	}
 }

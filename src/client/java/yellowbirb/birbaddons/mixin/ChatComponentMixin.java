@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.feature.impl.ChatTabs;
 
 @Mixin(ChatComponent.class)
@@ -15,8 +16,9 @@ public class ChatComponentMixin {
     // Chat Tabs: filter messages from chat
     @WrapMethod(method = "addMessageToDisplayQueue")
     private void onAddVisibleMessage(GuiMessage message, Operation<Void> original) {
-        if (ChatTabs.enabled.get()) {
-            if (ChatTabs.filter(message.content(), ChatTabs.chatTab)) {
+        ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
+        if (chatTabs.enabled()) {
+            if (ChatTabs.filter(message.content(), chatTabs.chatTab)) {
                 original.call(message);
             }
         }
@@ -27,7 +29,8 @@ public class ChatComponentMixin {
             {"addMessageToDisplayQueue", "addMessageToQueue", "addRecentChat"},
             at = @At(value = "CONSTANT", args = "intValue=100"))
     public int modifyMaxHistorySize(int originalMaxSize) {
-        if (ChatTabs.enabled.get()) {
+        ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
+        if (chatTabs.enabled()) {
             return 512;
         } else {
             return originalMaxSize;

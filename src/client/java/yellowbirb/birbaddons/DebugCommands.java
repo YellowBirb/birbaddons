@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.network.chat.Component;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
-import yellowbirb.birbaddons.feature.impl.AdrenalineBar;
 
 public class DebugCommands {
 
@@ -15,21 +14,21 @@ public class DebugCommands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("startAdrenalin").executes((_) -> {
-                    AdrenalineBar.adrenalineUsed("", 40, 100);
+                    BirbAddonsClient.getInstance().features.adrenalineBar.adrenalineUsed("", 5000, 15000);
                     return 1;
                 }))
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("expireAdrenalin").executes((_) -> {
-                    AdrenalineBar.expired();
+                    BirbAddonsClient.getInstance().features.adrenalineBar.expired();
                     return 1;
                 }))
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("rechargeAdrenalin").executes((_) -> {
-                    AdrenalineBar.recharged();
+                    BirbAddonsClient.getInstance().features.adrenalineBar.recharged();
                     return 1;
                 }))
         );

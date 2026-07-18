@@ -2,10 +2,10 @@ package yellowbirb.birbaddons.feature.impl;
 
 import yellowbirb.birbaddons.feature.Feature;
 
-public class DoomDrill extends Feature {
+public class NoSwing extends Feature {
 
-    public DoomDrill() {
-        super("DoomDrill");
+    public NoSwing() {
+        super("NoSwing");
     }
 
 }

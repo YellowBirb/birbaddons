@@ -3,8 +3,6 @@ package yellowbirb.birbaddons;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.feature.impl.AdrenalineBar;
-import yellowbirb.birbaddons.feature.impl.DoomDrill;
 import yellowbirb.birbaddons.render.RenderManager;
 
 // TODO: subcommand system
@@ -14,14 +12,21 @@ public class Commands {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("holddrill").executes((_) -> {
-                    DoomDrill.enabled.set(!DoomDrill.enabled.get());
+                    BirbAddonsClient.getInstance().features.doomDrill.toggle();
                     return 1;
                 }))
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
                 dispatcher.register(ClientCommands.literal("toggleadrenaline").executes((_) -> {
-                    AdrenalineBar.enabled.set(!AdrenalineBar.enabled.get());
+                    BirbAddonsClient.getInstance().features.adrenalineBar.toggle();
+                    return 1;
+                }))
+        );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+                dispatcher.register(ClientCommands.literal("toggletheodolite").executes((_) -> {
+                    BirbAddonsClient.getInstance().features.theodolite.toggle();
                     return 1;
                 }))
         );

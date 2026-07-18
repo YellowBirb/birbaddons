@@ -13,24 +13,23 @@ import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.Sounds;
 import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
+import yellowbirb.birbaddons.feature.Feature;
 
-public class AdrenalineBar {
+public class AdrenalineBar extends Feature {
 
     //TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall, CotM
 
-    public static final String ID = "AdrenalineBar";
-    public static final ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", false);
-    public static final ConfigBoolean replayFullSound = new ConfigBoolean(ID, "replayFullSound", false);
+    public final ConfigBoolean replayFullSound = new ConfigBoolean(ID, "replayFullSound", false);
 
-    private static boolean available = true;
-    private static boolean inUse = false;
+    public boolean available = true;
+    public boolean inUse = false;
 
-    private static long abilityStartMillis = 0;
-    private static long durationEndMillis = 0;
-    private static long durationEndConfirmedMillis = 0;
-    private static long cooldownEndMillis = 0;
-    private static long animationStartMillis = 0;
+    public long abilityStartMillis = 0;
+    public long durationEndMillis = 0;
+    public long durationEndConfirmedMillis = 0;
+    public long cooldownEndMillis = 0;
+    public long animationStartMillis = 0;
 
     private static final String MA_USED_MESSAGE = "You used your (Mining Speed Boost|Pickobulus|Tunnel Vision|Maniac Miner|Gemstone Infusion|Sheer Force) Pickaxe Ability!";
     private static final String MA_EXPIRED_MESSAGE = "Your (Mining Speed Boost|Pickobulus|Tunnel Vision|Maniac Miner|Gemstone Infusion|Sheer Force) has expired!";
@@ -42,7 +41,8 @@ public class AdrenalineBar {
     private static final Identifier adrenalineBarBorderFullTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinebarborderfull.png");
     private static final Identifier adrenalineBarFullAnimationTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/adrenalinebar/adrenalinefullanimation.png");
 
-    public static void init() {
+    public AdrenalineBar() {
+        super("AdrenalineBar");
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
             String[] words = msg.split("\\s");
             String ability = "";
@@ -67,32 +67,33 @@ public class AdrenalineBar {
     }
 
     public static void extract(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (enabled.get()) {
+        AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
+        if (adrenalineBar.enabled.get()) {
             int x = 100;
             int y = 100;
             float mult = 1.0F;
 
-            float barProgress = getBarProgress();
+            float barProgress = adrenalineBar.getBarProgress();
 
-            if (available) {
+            if (adrenalineBar.available) {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderFullTexture, x, y, 0, 6, Math.round(104*mult), Math.round(32*mult), 104, 32, 104, 240);
             } else {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderTexture, x, y, 0, 6, Math.round(104*mult), Math.round(32*mult), 104, 32, 104, 480);
             }
             graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarTexture, x+Math.round(12*mult), y+Math.round(14*mult), 0, 18, Math.round(80*mult*barProgress), Math.round(8*mult), Math.round(80*barProgress), 8, 80, 36);
 
-            int animFrame = (int) Math.floor((double) (Util.getMillis() - animationStartMillis) / 100);
+            int animFrame = (int) Math.floor((double) (Util.getMillis() - adrenalineBar.animationStartMillis) / 100);
             if (animFrame < 10) {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarFullAnimationTexture, x-Math.round(34*mult), y-Math.round(19*mult), 0, animFrame*70, Math.round(172*mult), Math.round(70*mult), 172, 70, 172, 700);
             }
         }
     }
 
-    private static float getBarProgress() {
+    private float getBarProgress() {
         float barProgress;
         long durationDivisor = durationEndMillis - abilityStartMillis;
         long cooldownDivisor = cooldownEndMillis - durationEndConfirmedMillis;
-        if (available || durationDivisor == 0 || cooldownDivisor == 0) {
+        if (available || (durationDivisor == 0 && inUse) || cooldownDivisor <= 0) {
             barProgress = 1.0F;
         } else if (inUse) {
             barProgress = Math.max(0, (float) (durationEndMillis - Util.getMillis()) / (durationDivisor));
@@ -102,7 +103,7 @@ public class AdrenalineBar {
         return barProgress;
     }
 
-    public static void adrenalineUsed(String ability, int durationMillis, int cooldownMillis) {
+    public void adrenalineUsed(String ability, int durationMillis, int cooldownMillis) {
         if (enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
@@ -129,7 +130,7 @@ public class AdrenalineBar {
         }
     }
 
-    public static void expired() {
+    public void expired() {
         if (enabled.get()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
@@ -140,7 +141,7 @@ public class AdrenalineBar {
         durationEndConfirmedMillis = Util.getMillis();
     }
 
-    public static void recharged() {
+    public void recharged() {
         if (!available || replayFullSound.get()) {
             if (enabled.get()) {
                 LocalPlayer player = Minecraft.getInstance().player;

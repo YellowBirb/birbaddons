@@ -1,15 +1,15 @@
 package yellowbirb.birbaddons.feature.impl;
 
 import net.minecraft.network.chat.Component;
-import yellowbirb.birbaddons.config.ConfigBoolean;
+import yellowbirb.birbaddons.feature.Feature;
 
-public class ChatTabs {
+public class ChatTabs extends Feature {
 
-    public static final String ID = "ChatTabs";
-    public static final ConfigBoolean enabled = new ConfigBoolean(ID, "enabled", true);
-    public static Tab chatTab = Tab.ALL;
+    public Tab chatTab = Tab.ALL;
 
-    public static void init() {}
+    public ChatTabs() {
+        super("ChatTabs");
+    }
 
     private static String removeFormatting(String string) {
         StringBuilder stringBuilder = new StringBuilder(string);

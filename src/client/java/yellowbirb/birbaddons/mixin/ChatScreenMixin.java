@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.feature.impl.ChatTabs;
 
 @Mixin(ChatScreen.class)
@@ -28,7 +29,8 @@ public abstract class ChatScreenMixin extends Screen {
     // Chat Tabs: Insert Tab Buttons into Chat Screen
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
-        if (ChatTabs.enabled.get()) {
+        ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
+        if (chatTabs.enabled()) {
             Minecraft client = Minecraft.getInstance();
             ChatComponent hud = client.gui.getChat();
             for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
@@ -41,7 +43,7 @@ public abstract class ChatScreenMixin extends Screen {
                     case COOP -> message = "CC";
                 }
                 Button tabButton = Button.builder(Component.literal(message), (_) -> {
-                    ChatTabs.chatTab = chatTab;
+                    chatTabs.chatTab = chatTab;
                     hud.rescaleChat();
                     client.schedule(() -> setFocused(input));
                 }).bounds(5 + chatTab.ordinal() * 22, this.height - ChatComponent.getHeight(Minecraft.getInstance().options.chatHeightFocused().get()) - 40 - 20 - 5, 20, 20).build();
@@ -55,7 +57,8 @@ public abstract class ChatScreenMixin extends Screen {
     //            otherwise Buttons would be focused, not allowing user to type
     @Inject(at = @At("HEAD"), method = "keyPressed")
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-        if (ChatTabs.enabled.get()) {
+        ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
+        if (chatTabs.enabled()) {
             setFocused(this.input);
         }
     }
