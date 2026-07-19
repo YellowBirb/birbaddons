@@ -14,9 +14,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
+import org.joml.Vector2d;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.Sounds;
 import yellowbirb.birbaddons.config.ConfigBoolean;
+import yellowbirb.birbaddons.config.ConfigFloat;
+import yellowbirb.birbaddons.config.ConfigVec2d;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Feature;
 import yellowbirb.birbaddons.util.Utils;
@@ -26,6 +29,8 @@ public class AdrenalineBar extends Feature {
     //TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall, CotM
 
+    public final ConfigVec2d pos;
+    public final ConfigFloat mult;
     public final ConfigBoolean replayFullSound;
 
     public boolean available = true;
@@ -50,6 +55,8 @@ public class AdrenalineBar extends Feature {
     public AdrenalineBar() {
         super("AdrenalineBar");
 
+        pos = new ConfigVec2d(ID, "pos", new Vector2d(100, 100));
+        mult = new ConfigFloat(ID, "mult", 1.0F);
         replayFullSound = new ConfigBoolean(ID, "replayFullSound", false);
 
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
@@ -70,10 +77,9 @@ public class AdrenalineBar extends Feature {
     public static void extract(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
         if (adrenalineBar.enabled.get()) {
-            // TODO: ConfigValues for those (Vec2D?, float)
-            int x = 100;
-            int y = 100;
-            float mult = 1.0F;
+            int x = (int) adrenalineBar.pos.get().x;
+            int y = (int) adrenalineBar.pos.get().y;
+            float mult = adrenalineBar.mult.get();
 
             float barProgress = adrenalineBar.getBarProgress();
 
@@ -161,6 +167,8 @@ public class AdrenalineBar extends Feature {
         LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
 
         LiteralArgumentBuilder<FabricClientCommandSource> set = ClientCommands.literal("set");
+        set.then(pos.getCommand());
+        set.then(mult.getCommand());
         set.then(replayFullSound.getCommand());
         command.then(set);
 

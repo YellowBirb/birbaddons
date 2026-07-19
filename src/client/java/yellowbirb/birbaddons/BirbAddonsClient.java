@@ -26,6 +26,8 @@ public class BirbAddonsClient implements ClientModInitializer {
 	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "";
 	private static final AtomicBoolean lookedForUpdate = new AtomicBoolean(false);
 
+	// TODO: save config more often?
+
 	@Override
 	public void onInitializeClient() {
 		instance = this;

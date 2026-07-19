@@ -15,10 +15,10 @@ public abstract class ConfigValue<T> {
     protected JsonElement value;
     protected int hash = 0;
 
-    public ConfigValue(String featureKey, String valueKey, JsonElement defaultValue) {
+    public ConfigValue(String featureKey, String valueKey, T defaultValue) {
         this.featureKey = featureKey;
         this.valueKey = valueKey;
-        this.defaultValue = defaultValue;
+        this.defaultValue = getAsJsonElement(defaultValue);
         load();
     }
 
@@ -34,9 +34,16 @@ public abstract class ConfigValue<T> {
         }
     }
 
-    abstract public T get();
+    public T get() {
+        load();
+        return getFromJsonElement(value);
+    }
 
-    abstract public void set(T value);
+    abstract public T getFromJsonElement(JsonElement json);
+
+    public void set(T value) {
+        set(getAsJsonElement(value));
+    }
 
     protected void set(JsonElement jsonElement) {
         if (!Config.get().has(featureKey)) {
@@ -47,10 +54,15 @@ public abstract class ConfigValue<T> {
         hash = Config.hash(true);
     }
 
+    abstract public JsonElement getAsJsonElement(T value);
+
     public String getValueKey() {
         return valueKey;
     }
 
-    abstract public LiteralArgumentBuilder<FabricClientCommandSource> getCommand();
+    public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
+        return getCommand((_) -> {});
+    }
+
     abstract public LiteralArgumentBuilder<FabricClientCommandSource> getCommand(Consumer<T> consumer);
 }
