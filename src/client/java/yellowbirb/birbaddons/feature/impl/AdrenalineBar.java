@@ -26,7 +26,7 @@ public class AdrenalineBar extends Feature {
     //TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall, CotM
 
-    public final ConfigBoolean replayFullSound = new ConfigBoolean(ID, "replayFullSound", false);
+    public final ConfigBoolean replayFullSound;
 
     public boolean available = true;
     public boolean inUse = false;
@@ -49,6 +49,9 @@ public class AdrenalineBar extends Feature {
 
     public AdrenalineBar() {
         super("AdrenalineBar");
+
+        replayFullSound = new ConfigBoolean(ID, "replayFullSound", false);
+
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
             String[] words = msg.split("\\s");
             String ability = Utils.getMAFromFirstWord(words[3]);
@@ -156,6 +159,8 @@ public class AdrenalineBar extends Feature {
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
+
+        command.then(replayFullSound.getCommand());
 
         LiteralArgumentBuilder<FabricClientCommandSource> debug = ClientCommands.literal("debug");
 

@@ -2,6 +2,10 @@ package yellowbirb.birbaddons.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+
+import java.util.function.Consumer;
 
 public abstract class ConfigValue<T> {
 
@@ -46,4 +50,7 @@ public abstract class ConfigValue<T> {
     public String getValueKey() {
         return valueKey;
     }
+
+    abstract public LiteralArgumentBuilder<FabricClientCommandSource> getCommand();
+    abstract public LiteralArgumentBuilder<FabricClientCommandSource> getCommand(Consumer<T> consumer);
 }
