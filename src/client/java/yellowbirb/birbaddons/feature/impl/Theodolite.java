@@ -1,5 +1,9 @@
 package yellowbirb.birbaddons.feature.impl;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -9,6 +13,7 @@ import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Feature;
 import yellowbirb.birbaddons.render.RenderManager;
 import yellowbirb.birbaddons.render.RenderUtils;
+import yellowbirb.birbaddons.util.Utils;
 
 public class Theodolite extends Feature {
 
@@ -30,7 +35,7 @@ public class Theodolite extends Feature {
                 assert player != null;
 
                 if (Integer.parseInt(words[9]) == 0) {
-                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCannot calculate with 0 degree angle"));
+                    Utils.displayMessage("Cannot calculate with 0 degree angle");
                     return;
                 }
 
@@ -83,6 +88,50 @@ public class Theodolite extends Feature {
         if (enabled()) {
             RenderManager.clear();
         }
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
+        LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
+
+        LiteralArgumentBuilder<FabricClientCommandSource> clear = ClientCommands.literal("clear").executes((context) -> {
+            RenderManager.clear();
+            Utils.displayMessage(context.getSource().getPlayer(), "Cleared all Theodolite objects drawn in the world");
+            return 1;
+        });
+
+        command.then(clear);
+
+        LiteralArgumentBuilder<FabricClientCommandSource> debug = ClientCommands.literal("debug");
+
+        LiteralArgumentBuilder<FabricClientCommandSource> testtheodolite = ClientCommands.literal("testtheodolite")
+                .then(ClientCommands.argument("deltay", IntegerArgumentType.integer())
+                        .then(ClientCommands.argument("angle", IntegerArgumentType.integer())
+                                .executes((context -> {
+                                    if (!enabled()) {
+                                        Utils.displayMessage("Feature is not enabled!");
+                                    } else {
+                                        int deltay = IntegerArgumentType.getInteger(context, "deltay");
+                                        int angle = IntegerArgumentType.getInteger(context, "angle");
+                                        if (deltay == 0) {
+                                            Utils.displayMessage(context.getSource().getPlayer(), "You are at the exact height!");
+                                            ReceiveGameMessageEvent.receiveMessage(Component.literal("You are at the exact height!"));
+                                        } else if (deltay > 0) {
+                                            Utils.displayMessage(context.getSource().getPlayer(), "The target is around " + deltay + " blocks above, at a " + angle + " degrees angle!");
+                                            ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + deltay + " blocks above, at a " + angle + " degrees angle!"));
+                                        } else {
+                                            Utils.displayMessage(context.getSource().getPlayer(), "The target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!");
+                                            ReceiveGameMessageEvent.receiveMessage(Component.literal("The target is around " + (-deltay) + " blocks below, at a " + angle + " degrees angle!"));
+                                        }
+                                    }
+                                    return 1;
+                                }))));
+
+        debug.then(testtheodolite);
+
+        command.then(debug);
+
+        return command;
     }
 
 }

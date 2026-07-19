@@ -42,4 +42,8 @@ public abstract class ConfigValue<T> {
         Config.get().getAsJsonObject(featureKey).add(valueKey, value);
         hash = Config.hash(true);
     }
+
+    public String getValueKey() {
+        return valueKey;
+    }
 }

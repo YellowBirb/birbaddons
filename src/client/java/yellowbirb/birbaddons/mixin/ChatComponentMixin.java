@@ -21,6 +21,8 @@ public class ChatComponentMixin {
             if (ChatTabs.filter(message.content(), chatTabs.chatTab)) {
                 original.call(message);
             }
+        } else {
+            original.call(message);
         }
     }
 

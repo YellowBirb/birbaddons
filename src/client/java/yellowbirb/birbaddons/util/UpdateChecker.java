@@ -41,10 +41,10 @@ public class UpdateChecker {
                             .applyFormats(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                             .withClickEvent(new ClickEvent.OpenUrl(verURI))
                             .withHoverEvent(new HoverEvent.ShowText(Component.literal(newVerLink))));
-                    player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons ").append(link));
+                    Utils.displayMessage(player, Component.literal("Found new version §e" + highestVer + "§r of BirbAddons ").append(link));
                 } catch (URISyntaxException e) {
+                    Utils.displayMessage(player, "Found new version §e" + highestVer + "§r of BirbAddons but could not create link");
                     BirbAddonsClient.LOGGER.error("Error while creating Modrinth link to newer mod version", e);
-                    player.sendSystemMessage(Component.literal("§3[BirbAddons] §rFound new version §e" + highestVer + "§r of BirbAddons but could not create link"));
                 }
 
             }
@@ -58,7 +58,7 @@ public class UpdateChecker {
         try {
             jsonString = IOUtils.toString(new URI(apiLink).toURL().openStream(), StandardCharsets.UTF_8);
         } catch (URISyntaxException | IOException e) {
-            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rError while fetching mod versions from Modrinth"));
+            Utils.displayMessage(player, "Error while fetching mod versions from Modrinth");
             BirbAddonsClient.LOGGER.error("Error while fetching mod versions from Modrinth", e);
         }
         JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
@@ -83,7 +83,7 @@ public class UpdateChecker {
         }
 
         if (highestVer.isEmpty()) {
-            player.sendSystemMessage(Component.literal("§3[BirbAddons] §rCould not find any version of the mod for this Minecraft Version in Modrinth API"));
+            Utils.displayMessage(player, "Could not find any version of the mod for this Minecraft Version in Modrinth API");
             return "";
         }
         return highestVer+"|"+highestVerID;

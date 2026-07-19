@@ -1,6 +1,8 @@
 package yellowbirb.birbaddons;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import org.slf4j.Logger;
@@ -36,12 +38,14 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 		ClientReceiveMessageEvents.GAME.register((message, _) -> ReceiveGameMessageEvent.receiveMessage(message));
 
-		Commands.init();
-		DebugCommands.init();
-
 		Sounds.init();
 
 		features = new Features();
+
+		Command command = new Command();
+		LiteralArgumentBuilder<FabricClientCommandSource> commandBuilder = command.getBuilder();
+		features.buildCommands(commandBuilder);
+		command.registerCommand(commandBuilder);
 
 		// TODO: get link
 		/*ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> new Thread(() -> {

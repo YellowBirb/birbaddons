@@ -1,5 +1,8 @@
 package yellowbirb.birbaddons.feature;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import yellowbirb.birbaddons.feature.impl.*;
 
 import java.util.List;
@@ -22,6 +25,34 @@ public class Features {
         theodolite = new Theodolite();
 
         featureList = List.of(adrenalineBar, chatTabs, doomDrill, noSwing, theodolite);
+    }
+
+    public void buildCommands(LiteralArgumentBuilder<FabricClientCommandSource> commandBuilder) {
+
+        LiteralArgumentBuilder<FabricClientCommandSource> enable = ClientCommands.literal("enable");
+        LiteralArgumentBuilder<FabricClientCommandSource> disable = ClientCommands.literal("disable");
+        LiteralArgumentBuilder<FabricClientCommandSource> toggle = ClientCommands.literal("toggle");
+
+        for (Feature f : featureList) {
+            commandBuilder.then(f.getCommand());
+            enable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
+                f.enable();
+                return 1;
+            }));
+            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
+                f.disable();
+                return 1;
+            }));
+            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
+                f.toggle();
+                return 1;
+            }));
+        }
+
+        commandBuilder.then(enable);
+        commandBuilder.then(disable);
+        commandBuilder.then(toggle);
+
     }
 
 }

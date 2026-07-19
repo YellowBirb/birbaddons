@@ -1,5 +1,10 @@
 package yellowbirb.birbaddons.feature.impl;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -14,6 +19,7 @@ import yellowbirb.birbaddons.Sounds;
 import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Feature;
+import yellowbirb.birbaddons.util.Utils;
 
 public class AdrenalineBar extends Feature {
 
@@ -45,18 +51,9 @@ public class AdrenalineBar extends Feature {
         super("AdrenalineBar");
         ReceiveGameMessageEvent.register(MA_USED_MESSAGE, (msg) -> {
             String[] words = msg.split("\\s");
-            String ability = "";
-            // TODO: extract switch into method
-            switch (words[3]) {
-                case "Mining" -> ability = "Mining Speed Boost";
-                case "Pickobulus" -> ability = "Pickobulus";
-                case "Tunnel" -> ability = "Tunnel Vision";
-                case "Maniac" -> ability = "Maniac Miner";
-                case "Gemstone" -> ability = "Gemstone Infusion";
-                case "Sheer" -> ability = "Sheer Force";
-            }
-            int duration = getMiningAbilityDuration(ability, 3);
-            int cooldown = getMiningAbilityCooldown(ability, 3);
+            String ability = Utils.getMAFromFirstWord(words[3]);
+            int duration = Utils.getMiningAbilityDuration(ability, 3);
+            int cooldown = Utils.getMiningAbilityCooldown(ability, 3);
             adrenalineUsed(ability, duration*1000, cooldown*1000);
         });
 
@@ -156,24 +153,67 @@ public class AdrenalineBar extends Feature {
         }
     }
 
-    public static int getMiningAbilityDuration(String ability, int level) {
-        switch (ability) {
-            case "Mining Speed Boost" -> {return 5+5*level;}
-            case "Pickobulus" -> {return 0;}
-            case "Tunnel Vision" -> {return 30;}
-            case "Maniac Miner" -> {return 20+5*level;}
-            case "Gemstone Infusion", "Sheer Force" -> {return 15+5*level;}
-        }
-        return -1;
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
+        LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
+
+        LiteralArgumentBuilder<FabricClientCommandSource> debug = ClientCommands.literal("debug");
+
+        LiteralArgumentBuilder<FabricClientCommandSource> startAdrenaline = ClientCommands.literal("startAdrenaline")
+                .then(ClientCommands.argument("ability", StringArgumentType.string()).suggests((_, builder) -> {
+                    builder.suggest("Mining");
+                    builder.suggest("Pickobulus");
+                    builder.suggest("Tunnel");
+                    builder.suggest("Maniac");
+                    builder.suggest("Gemstone");
+                    builder.suggest("Sheer");
+                    return builder.buildFuture();
+                }).executes((context) -> {
+                    String ability = Utils.getMAFromFirstWord(StringArgumentType.getString(context, "ability"));
+                    adrenalineUsed(Utils.getMAFromFirstWord(ability), Utils.getMiningAbilityDuration(ability, 3)*1000, Utils.getMiningAbilityCooldown(ability, 3)*1000);
+                    return 1;
+                })
+                        .then(ClientCommands.argument("durationMillis", IntegerArgumentType.integer())
+                                .then(ClientCommands.argument("cooldownMillis", IntegerArgumentType.integer())
+                                        .executes(context -> {
+                                            if (!enabled()) {
+                                                Utils.displayMessage("Feature is not enabled!");
+                                            } else {
+                                                String ability = StringArgumentType.getString(context, "ability");
+                                                int durationMillis = IntegerArgumentType.getInteger(context, "durationMillis");
+                                                int cooldownMillis = IntegerArgumentType.getInteger(context, "cooldownMillis");
+                                                adrenalineUsed(Utils.getMAFromFirstWord(ability), durationMillis, cooldownMillis);
+                                            }
+                                            return 1;
+                                        }))));
+
+        LiteralArgumentBuilder<FabricClientCommandSource> expireAdrenaline = ClientCommands.literal("expireAdrenaline").executes((_) -> {
+            if (!enabled()) {
+                Utils.displayMessage("Feature is not enabled!");
+            } else {
+                expired();
+            }
+            return 1;
+        });
+
+        LiteralArgumentBuilder<FabricClientCommandSource> rechargeAdrenaline = ClientCommands.literal("rechargeAdrenaline").executes((_) -> {
+            if (!enabled()) {
+                Utils.displayMessage("Feature is not enabled!");
+            } else {
+                recharged();
+            }
+            return 1;
+        });
+
+        debug.then(startAdrenaline);
+        debug.then(expireAdrenaline);
+        debug.then(rechargeAdrenaline);
+
+        command.then(debug);
+
+        return command;
     }
 
-    public static int getMiningAbilityCooldown(String ability, int level) {
-        switch (ability) {
-            case "Mining Speed Boost", "Gemstone Infusion", "Sheer Force", "Maniac Miner" -> {return 120;}
-            case "Pickobulus" -> {return 70-10*level;}
-            case "Tunnel Vision" -> {return 130-10*level;}
-        }
-        return -1;
-    }
+
 
 }
