@@ -160,7 +160,9 @@ public class AdrenalineBar extends Feature {
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
 
-        command.then(replayFullSound.getCommand());
+        LiteralArgumentBuilder<FabricClientCommandSource> set = ClientCommands.literal("set");
+        set.then(replayFullSound.getCommand());
+        command.then(set);
 
         LiteralArgumentBuilder<FabricClientCommandSource> debug = ClientCommands.literal("debug");
 

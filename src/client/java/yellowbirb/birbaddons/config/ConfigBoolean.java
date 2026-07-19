@@ -27,7 +27,7 @@ public class ConfigBoolean extends ConfigValue<Boolean>{
     }
 
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
-        return ClientCommands.literal("set"+getValueKey().toLowerCase())
+        return ClientCommands.literal(getValueKey().toLowerCase())
                 .then(ClientCommands.argument("boolean", BoolArgumentType.bool()).executes((ctx) -> {
                     boolean arg = BoolArgumentType.getBool(ctx, "boolean");
                     set(arg);
@@ -37,7 +37,7 @@ public class ConfigBoolean extends ConfigValue<Boolean>{
     }
 
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand(Consumer<Boolean> consumer) {
-        return ClientCommands.literal("set"+getValueKey().toLowerCase())
+        return ClientCommands.literal(getValueKey().toLowerCase())
                 .then(ClientCommands.argument("boolean", BoolArgumentType.bool()).executes((ctx) -> {
                     boolean arg = BoolArgumentType.getBool(ctx, "boolean");
                     set(arg);
