@@ -55,7 +55,7 @@ public abstract class ChatScreenMixin extends Screen {
 
     // Chat Tabs: reset focus to chat field if arrow key was pressed
     //            otherwise Buttons would be focused, not allowing user to type
-    @Inject(at = @At("HEAD"), method = "keyPressed")
+    @Inject(at = @At("TAIL"), method = "keyPressed")
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
         if (chatTabs.enabled()) {
