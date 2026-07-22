@@ -164,7 +164,10 @@ public class AdrenalineBar extends Feature {
 
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
-        LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
+        LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand().executes((_) -> {
+            Minecraft.getInstance().schedule(()-> Utils.displayMessage(/* TODO: menu */ "open menu (there is no menu yet)"));
+            return 1;
+        });
 
         LiteralArgumentBuilder<FabricClientCommandSource> set = ClientCommands.literal("set");
         set.then(pos.getCommand());

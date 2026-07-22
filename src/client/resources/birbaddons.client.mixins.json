@@ -3,6 +3,7 @@
 	"package": "yellowbirb.birbaddons.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"AbstractContainerScreenMixin",
 		"ChatComponentMixin",
 		"ChatScreenMixin",
 		"GameRendererMixin",

@@ -12,7 +12,7 @@ public class Command {
 
     public Command() {
         builder = ClientCommands.literal("ba").executes(/* TODO: open menu */ (_) -> {
-            Utils.displayMessage("open menu");
+            Utils.displayMessage("open menu (there is no menu yet)");
             return 1;
         });
     }
@@ -25,7 +25,7 @@ public class Command {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
             var ba = dispatcher.register(command);
             dispatcher.register(ClientCommands.literal("birbaddons").executes(/* TODO: open menu */ (_) -> {
-                Utils.displayMessage("open menu");
+                Utils.displayMessage("open menu (there is no menu yet)");
                 return 1;
             }).redirect(ba));
         });
