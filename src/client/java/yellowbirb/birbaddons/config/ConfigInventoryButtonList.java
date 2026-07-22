@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import yellowbirb.birbaddons.gui.InventoryButton;
+import yellowbirb.birbaddons.gui.inventorybutton.InventoryButton;
 
 import java.util.ArrayList;
 import java.util.List;

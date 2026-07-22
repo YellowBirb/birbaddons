@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.feature.impl.InventoryButtons;
-import yellowbirb.birbaddons.gui.InventoryButton;
+import yellowbirb.birbaddons.gui.inventorybutton.InventoryButton;
 
 import java.util.ArrayList;
 import java.util.List;

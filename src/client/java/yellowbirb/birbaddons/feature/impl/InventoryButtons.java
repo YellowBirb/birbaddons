@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import yellowbirb.birbaddons.config.ConfigInventoryButtonList;
 import yellowbirb.birbaddons.feature.Feature;
-import yellowbirb.birbaddons.gui.InventoryButtonEditScreen;
+import yellowbirb.birbaddons.gui.inventorybutton.InventoryButtonEditScreen;
 
 import java.util.List;
 
@@ -26,4 +26,8 @@ public class InventoryButtons extends Feature {
             return 1;
         });
     }
+
+    // TODO: icon
+    // TODO: make positions work with dynamic screen dimensions
+    // TODO: Editor show symmetry/parallel lines while dragging for satisfying arranging
 }

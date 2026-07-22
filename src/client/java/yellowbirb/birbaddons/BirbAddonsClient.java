@@ -27,6 +27,7 @@ public class BirbAddonsClient implements ClientModInitializer {
 	private static final AtomicBoolean lookedForUpdate = new AtomicBoolean(false);
 
 	// TODO: save config more often?
+	// TODO: menu
 
 	@Override
 	public void onInitializeClient() {

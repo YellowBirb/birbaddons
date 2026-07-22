@@ -1,6 +1,7 @@
-package yellowbirb.birbaddons.gui;
+package yellowbirb.birbaddons.gui.inventorybutton;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryButtonEditScreen extends Screen {
+
     public InventoryButtonEditScreen() {
         super(Component.literal(""));
     }
@@ -30,18 +32,49 @@ public class InventoryButtonEditScreen extends Screen {
         }
     }
 
-    public <T extends GuiEventListener & Renderable & NarratableEntry> void add(T widget) {
-        this.addRenderableWidget(widget);
+    @Override
+    public <T extends GuiEventListener & Renderable & NarratableEntry> @NonNull T addRenderableWidget(@NonNull T widget) {
+        return super.addRenderableWidget(widget);
+    }
+
+    @Override
+    public void rebuildWidgets() {
+        super.rebuildWidgets();
     }
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
-        if (super.mouseClicked(event, doubleClick)) return true;
-        if (!clearPopups()) {
-            BirbAddonsClient.getInstance().features.inventoryButtons.buttons.add(new InventoryButton((int) Math.round(event.x()), (int) Math.round(event.y())));
+        List<GuiEventListener> children = getChildrenAt(event.x(), event.y());
+        if (!children.isEmpty()) {
+            for (GuiEventListener widget : children) {
+                if (widget.mouseClicked(event, doubleClick)) {
+                    if (widget.shouldTakeFocusAfterInteraction()) {
+                        this.setFocused(widget);
+                    }
+                    if (event.button() == 0) {
+                        this.setDragging(true);
+                    }
+                    return true;
+                }
+            }
         }
-        this.rebuildWidgets();
+        else {
+            if (!clearPopups()) {
+                BirbAddonsClient.getInstance().features.inventoryButtons.buttons.add(new InventoryButton((int) Math.round(event.x()), (int) Math.round(event.y())));
+            }
+            this.rebuildWidgets();
+        }
         return true;
+    }
+
+    public List<GuiEventListener> getChildrenAt(double x, double y) {
+        List<GuiEventListener> res = new ArrayList<>();
+        for (GuiEventListener guiEventListener : this.children().reversed()) {
+            if (guiEventListener.isMouseOver(x, y)) {
+                res.add(guiEventListener);
+            }
+        }
+        return res;
     }
 
     public boolean clearPopups() {
@@ -54,7 +87,10 @@ public class InventoryButtonEditScreen extends Screen {
             }
         }
         for (InventoryButtonEditPopup ibep2 : del) {
-            ibep2.onClose();
+            ibep2.saveButton();
+            for (AbstractWidget widget : ibep2.widgets) {
+                this.removeWidget(widget);
+            }
             this.removeWidget(ibep2);
         }
         return flag;
@@ -63,13 +99,17 @@ public class InventoryButtonEditScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("textures/gui/container/inventory.png"), (this.width - 176) / 2, (this.height - 166) / 2, 0.0F, 0.0F, 176, 166, 256, 256);
-        graphics.text(getFont(), "test", 10, 10, ARGB.white(1.0F));
+        graphics.text(getFont(), "Click anywhere to create a button", 10, 10, ARGB.white(1.0F));
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     @Override
     public void onClose() {
-        clearPopups();
+        for (GuiEventListener widget : this.children()) {
+            if (widget instanceof InventoryButtonEditPopup ibep) {
+                ibep.saveButton();
+            }
+        }
         BirbAddonsClient.getInstance().features.inventoryButtons.buttons.syncRepresentation();
         Config.save();
         super.onClose();
