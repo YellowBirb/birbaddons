@@ -61,7 +61,7 @@ public class InventoryButtonEditPopup extends AbstractWidget {
         int iconY1 = getY()+margin+18;
         icon = (graphics, _, _, _) -> graphics.fill(iconX0, iconY0, iconX1, iconY1, 0xFF00FF00);
 
-        iconText = (graphics, _, _, _) -> graphics.text(font, "Icon", iconX1 + margin, iconY0 + (9-font.lineHeight/2), ARGB.white(1.0F));
+        iconText = (graphics, _, _, _) -> graphics.text(font, "Icon", getX() + margin, iconY1 - font.lineHeight, ARGB.white(1.0F));
 
         int delButtonX = getX()+width-16-margin;
         int delButtonY = getY() + margin;
@@ -118,7 +118,8 @@ public class InventoryButtonEditPopup extends AbstractWidget {
     public void init() {
 
         renderables.add(background);
-        renderables.add(icon);
+        // TODO: icon
+        // renderables.add(icon);
         renderables.add(iconText);
         renderables.add(commandText);
         renderables.add(slash);
@@ -187,7 +188,7 @@ public class InventoryButtonEditPopup extends AbstractWidget {
         }
 
         @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
             if (!this.isActive()) {
                 return false;
             }
@@ -207,6 +208,6 @@ public class InventoryButtonEditPopup extends AbstractWidget {
         }
 
         @Override
-        protected void updateWidgetNarration(NarrationElementOutput output) {}
+        protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {}
     }
 }
