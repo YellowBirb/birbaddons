@@ -54,6 +54,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         this.itemSlotMouseActions = new ArrayList<>();
     }
 
+    // Inventory Buttons: Inject buttons into Menus
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         InventoryButtons inventoryButtons = BirbAddonsClient.getInstance().features.inventoryButtons;
