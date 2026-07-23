@@ -1,9 +1,10 @@
 # BirbAddons
 
-## Setup
+## Features
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+- Chat Tabs         - previously [Hypixel Chat Tabs](https://modrinth.com/mod/hypixel-chat-tabs)
+- Theodolite Solver - previously [Birb's Theodolite](https://modrinth.com/mod/birbs-theodolite)
+- Adrenaline Bar    - from the Terraria Calamity Mod as a Mining Ability HUD display
+- NoSwing           - disable item swinging animation
+- Doom Drill        - hold your drill in a funky position
+- Inventory Buttons
