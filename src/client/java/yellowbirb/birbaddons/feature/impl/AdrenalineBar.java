@@ -26,8 +26,10 @@ import yellowbirb.birbaddons.util.Utils;
 
 public class AdrenalineBar extends Feature {
 
-    //TODO: ? ItemEvents#USE
+    // TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall, CotM
+    // TODO: ? make bar shake?
+    // TODO: Screen to drag it around in
 
     public final ConfigVec2d pos;
     public final ConfigFloat mult;
