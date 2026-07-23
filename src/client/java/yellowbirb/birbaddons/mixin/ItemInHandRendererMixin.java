@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import org.spongepowered.asm.mixin.Mixin;
 import yellowbirb.birbaddons.BirbAddonsClient;
+import yellowbirb.birbaddons.feature.impl.NoSwing;
 import yellowbirb.birbaddons.util.Utils;
 
 @Mixin(ItemInHandRenderer.class)
@@ -22,10 +23,11 @@ public class ItemInHandRendererMixin {
     // disable drill moving in hand: no swinging the drill when mining
     @WrapMethod(method = "swingArm")
     private void swingArm(float attack, PoseStack poseStack, int invert, HumanoidArm arm, Operation<Void> original) {
-        if (BirbAddonsClient.getInstance().features.noSwing.enabled()) {
+        NoSwing noSwing = BirbAddonsClient.getInstance().features.noSwing;
+        if (noSwing.enabled()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                if (!Utils.isDrill(Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND))) {
+                if (!(Utils.isDrill(Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND)) || !noSwing.onlyDrills.get())) {
                     original.call(attack, poseStack, invert, arm);
                 }
             } else {
