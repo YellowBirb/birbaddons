@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import org.joml.Vector2d;
+import org.jspecify.annotations.NonNull;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.Sounds;
 import yellowbirb.birbaddons.config.ConfigBoolean;
@@ -22,6 +23,8 @@ import yellowbirb.birbaddons.config.ConfigFloat;
 import yellowbirb.birbaddons.config.ConfigVec2d;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Feature;
+import yellowbirb.birbaddons.gui.FakeHUDWidget;
+import yellowbirb.birbaddons.gui.HUDEditScreen;
 import yellowbirb.birbaddons.util.Utils;
 
 public class AdrenalineBar extends Feature {
@@ -29,7 +32,6 @@ public class AdrenalineBar extends Feature {
     // TODO: ? ItemEvents#USE
     // TODO: ? Fuel Tank, Blue Cheese Omelette, (Bal/Crow), Skymall, CotM
     // TODO: ? make bar shake?
-    // TODO: Screen to drag it around in
 
     public final ConfigVec2d pos;
     public final ConfigFloat mult;
@@ -164,15 +166,34 @@ public class AdrenalineBar extends Feature {
         }
     }
 
+    public static void openPosMenu(Minecraft client) {
+        client.schedule(()-> {
+            AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
+            float multt = adrenalineBar.mult.get();
+            client.setScreen(new HUDEditScreen(new FakeHUDWidget((int) adrenalineBar.pos.get().x(), (int) adrenalineBar.pos.get().y(), Math.round(104*multt), Math.round(32*multt), adrenalineBar.pos) {
+                @Override
+                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderFullTexture, getX(), getY(), 0, 6, getWidth(), getHeight(), 104, 32, 104, 240);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarTexture, getX()+Math.round(12*multt), getY()+Math.round(14*multt), 0, 18, Math.round(80*multt), Math.round(8*multt), 80, 8, 80, 36);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarFullAnimationTexture, getX()-Math.round(34*multt), getY()-Math.round(19*multt), 0, 350, Math.round(172*multt), Math.round(70*multt), 172, 70, 172, 700);
+                }
+            }));
+        });
+    }
+
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand().executes((_) -> {
-            Minecraft.getInstance().schedule(()-> Utils.displayMessage(/* TODO: menu */ "open menu (there is no menu yet)"));
+            openPosMenu(Minecraft.getInstance());
             return 1;
         });
 
         LiteralArgumentBuilder<FabricClientCommandSource> set = ClientCommands.literal("set");
-        set.then(pos.getCommand());
+        set.then(ClientCommands.literal("pos").executes((_) -> {
+            openPosMenu(Minecraft.getInstance());
+            return 1;
+        }));
         set.then(mult.getCommand());
         set.then(replayFullSound.getCommand());
         command.then(set);
