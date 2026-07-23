@@ -23,6 +23,7 @@ public class HUDEditScreen extends Screen {
 
     @Override
     protected void init() {
+        this.addRenderableOnly((graphics, _, _, _) -> graphics.centeredText(getFont(), "Drag elements to set their position", width/2, 20, 0xFFFFFFFF));
         for (FakeHUDWidget widget : widgets) {
             this.addRenderableWidget(widget);
         }
