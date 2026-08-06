@@ -11,20 +11,9 @@ public class ChatTabs extends Feature {
         super("ChatTabs");
     }
 
+    // Thanks to Riccio for providing a less error-prone method
     private static String removeFormatting(String string) {
-        StringBuilder stringBuilder = new StringBuilder(string);
-        int deleted = 0;
-        for (int i = 0; i < string.length(); i++) {
-            while (string.charAt(i) == '§') {
-                stringBuilder.deleteCharAt(i-deleted);
-                deleted++;
-                i++;
-                stringBuilder.deleteCharAt(i-deleted);
-                deleted++;
-                i++;
-            }
-        }
-        return stringBuilder.toString();
+        return string == null ? "" : string.replaceAll("§.?", "");
     }
 
     // Heavy "Inspiration" from  https://github.com/skytils
