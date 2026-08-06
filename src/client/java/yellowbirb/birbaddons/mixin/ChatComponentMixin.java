@@ -25,17 +25,4 @@ public class ChatComponentMixin {
             original.call(message);
         }
     }
-
-    // Chat Tabs: increase Chat History Size
-    @ModifyExpressionValue(method =
-            {"addMessageToDisplayQueue", "addMessageToQueue", "addRecentChat"},
-            at = @At(value = "CONSTANT", args = "intValue=100"))
-    public int modifyMaxHistorySize(int originalMaxSize) {
-        ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
-        if (chatTabs.enabled()) {
-            return 512;
-        } else {
-            return originalMaxSize;
-        }
-    }
 }
