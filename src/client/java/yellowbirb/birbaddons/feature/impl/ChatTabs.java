@@ -33,8 +33,8 @@ public class ChatTabs extends Feature {
                     message.endsWith("has been removed from the party.") || message.startsWith("The party was transferred to ") ||
                     (message.startsWith("Kicked ") && message.endsWith(" because they were offline."));
             case GUILD -> message.startsWith("Guild > ") || message.startsWith("G > ");
-            case PRIVATE -> message.startsWith("To ") || message.startsWith("From ") ||
-                    message.startsWith("Friend > ");
+            case PRIVATE -> message.contains(":") && (message.startsWith("To ") || message.startsWith("From ") ||
+                    message.startsWith("Friend > "));
             case COOP -> message.startsWith("Co-op > ");
         };
     }
