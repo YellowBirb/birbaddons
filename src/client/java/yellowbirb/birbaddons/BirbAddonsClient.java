@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import yellowbirb.birbaddons.config.Config;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Features;
 import yellowbirb.birbaddons.render.RenderManager;
+import yellowbirb.birbaddons.util.UpdateChecker;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,12 +24,12 @@ public class BirbAddonsClient implements ClientModInitializer {
 
 	public Features features;
 
-	// TODO: get link
-	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "";
+	private static final String MODRINTH_PROJECT_ID = "brU03tAB";
+	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "https://api.modrinth.com/v2/project/" + MODRINTH_PROJECT_ID + "/version";
 	private static final AtomicBoolean lookedForUpdate = new AtomicBoolean(false);
 
-	// TODO: save config more often?
 	// TODO: menu
+	// TODO: chatpeek?
 
 	@Override
 	public void onInitializeClient() {
@@ -50,13 +52,12 @@ public class BirbAddonsClient implements ClientModInitializer {
 		features.buildCommands(commandBuilder);
 		command.registerCommand(commandBuilder);
 
-		// TODO: get link
-		/*ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> new Thread(() -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> new Thread(() -> {
 			if (!lookedForUpdate.get()) {
 				lookedForUpdate.set(true);
 				UpdateChecker.checkForUpdate(MODRINTH_PROJECT_VERSION_API_LINK);
 			}
-		}).start());*/
+		}).start());
 	}
 
 	public static BirbAddonsClient getInstance() {

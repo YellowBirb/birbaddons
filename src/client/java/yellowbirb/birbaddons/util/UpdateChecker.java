@@ -32,8 +32,7 @@ public class UpdateChecker {
 
             // give player link to highest found version if it is greater than version found in Mod's Metadata
             if (isLesserVerThan(FabricLoader.getInstance().getModContainer(BirbAddonsClient.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString(), highestVer)) {
-                // TODO: new link
-                String newVerLink = "https://modrinth.com/mod/birbaddons/version/" + highestVerID;
+                String newVerLink = "https://modrinth.com/mod/brU03tAB/version/" + highestVerID;
                 try {
                     URI verURI = new URI(newVerLink);
                     MutableComponent link = Component.literal("here");
