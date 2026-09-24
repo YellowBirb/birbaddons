@@ -3,8 +3,6 @@ package yellowbirb.birbaddons.feature;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.util.Utils;
 
@@ -19,20 +17,10 @@ public abstract class Feature {
     }
 
     public void enable() {
-        enable(Minecraft.getInstance().player);
-    }
-
-    public void enable(LocalPlayer player) {
-        Utils.displayMessage(player, "enabled " + ID);
         enabled.set(true);
     }
 
     public void disable() {
-        disable(Minecraft.getInstance().player);
-    }
-
-    public void disable(LocalPlayer player) {
-        Utils.displayMessage(player, "disabled " + ID);
         enabled.set(false);
     }
 
@@ -40,30 +28,34 @@ public abstract class Feature {
         return enabled.get();
     }
 
-    public void toggle(){
-        toggle(Minecraft.getInstance().player);
-    }
-
-    public void toggle(LocalPlayer player){
+    public boolean toggle(){
         if (enabled()) {
-            disable(player);
+            disable();
+            return false;
         } else {
-            enable(player);
+            enable();
+            return true;
         }
     }
 
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         LiteralArgumentBuilder<FabricClientCommandSource> command = ClientCommands.literal(ID.toLowerCase());
         LiteralArgumentBuilder<FabricClientCommandSource> enableCommand = ClientCommands.literal("enable").executes((ctx) -> {
-            enable(ctx.getSource().getPlayer());
+            enable();
+            Utils.displayMessage(ctx.getSource().getPlayer(), "enabled " + ID);
             return 1;
         });
         LiteralArgumentBuilder<FabricClientCommandSource> disableCommand = ClientCommands.literal("disable").executes((ctx) -> {
-            disable(ctx.getSource().getPlayer());
+            disable();
+            Utils.displayMessage(ctx.getSource().getPlayer(), "disabled " + ID);
             return 1;
         });
         LiteralArgumentBuilder<FabricClientCommandSource> toggleCommand = ClientCommands.literal("toggle").executes((ctx) -> {
-            toggle(ctx.getSource().getPlayer());
+            if (toggle()) {
+                Utils.displayMessage(ctx.getSource().getPlayer(), "enabled " + ID);
+            } else {
+                Utils.displayMessage(ctx.getSource().getPlayer(), "disabled " + ID);
+            }
             return 1;
         });
 

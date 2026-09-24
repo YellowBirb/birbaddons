@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import yellowbirb.birbaddons.feature.impl.*;
+import yellowbirb.birbaddons.util.Utils;
 
 import java.util.List;
 
@@ -37,16 +38,22 @@ public class Features {
 
         for (Feature f : featureList) {
             commandBuilder.then(f.getCommand());
-            enable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
+            enable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((ctx) -> {
                 f.enable();
+                Utils.displayMessage(ctx.getSource().getPlayer(), "enabled " + f.ID);
                 return 1;
             }));
-            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
+            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((ctx) -> {
                 f.disable();
+                Utils.displayMessage(ctx.getSource().getPlayer(), "disabled " + f.ID);
                 return 1;
             }));
-            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((_) -> {
-                f.toggle();
+            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((ctx) -> {
+                if (f.toggle()) {
+                    Utils.displayMessage(ctx.getSource().getPlayer(), "enabled " + f.ID);
+                } else {
+                    Utils.displayMessage(ctx.getSource().getPlayer(), "disabled " + f.ID);
+                }
                 return 1;
             }));
         }
