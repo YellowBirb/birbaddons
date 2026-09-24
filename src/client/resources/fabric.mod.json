@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "birbaddons",
-	"version": "${version}",
+	"version": "1.0.1",
 	"name": "BirbAddons",
 	"description": "Various features I made for Hypixel Skyblock",
 	"authors": [

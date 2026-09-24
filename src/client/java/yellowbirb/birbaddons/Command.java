@@ -4,15 +4,17 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import yellowbirb.birbaddons.util.Utils;
+import net.minecraft.client.Minecraft;
+import yellowbirb.birbaddons.gui.mainmenu.MenuScreen;
 
 public class Command {
 
     private final LiteralArgumentBuilder<FabricClientCommandSource> builder;
 
     public Command() {
-        builder = ClientCommands.literal("ba").executes(/* TODO: open menu */ (_) -> {
-            Utils.displayMessage("open menu (there is no menu yet)");
+        builder = ClientCommands.literal("ba").executes((_) -> {
+            Minecraft client = Minecraft.getInstance();
+            client.schedule(()-> client.setScreen(new MenuScreen()));
             return 1;
         });
     }
@@ -24,8 +26,9 @@ public class Command {
     public void registerCommand(LiteralArgumentBuilder<FabricClientCommandSource> command) {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
             var ba = dispatcher.register(command);
-            dispatcher.register(ClientCommands.literal("birbaddons").executes(/* TODO: open menu */ (_) -> {
-                Utils.displayMessage("open menu (there is no menu yet)");
+            dispatcher.register(ClientCommands.literal("birbaddons").executes((_) -> {
+                Minecraft client = Minecraft.getInstance();
+                client.schedule(()-> client.setScreen(new MenuScreen()));
                 return 1;
             }).redirect(ba));
         });

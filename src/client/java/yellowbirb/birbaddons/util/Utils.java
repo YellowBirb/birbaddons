@@ -5,6 +5,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import yellowbirb.birbaddons.BirbAddonsClient;
@@ -74,6 +75,44 @@ public class Utils {
             default -> BirbAddonsClient.LOGGER.error("Unknown Ability in getMiningAbilityCooldown: {}", ability);
         }
         return -1;
+    }
+
+    public static int hsvToRGB(int alpha, float h, float s, float v) {
+        while (h>=360) {
+            h-=360;
+        }
+        float c = v*s;
+        float x = c*(1 - Math.abs(((h/60)%2)-1));
+        float m = v-c;
+        float r_ = 0;
+        float g_ = 0;
+        float b_ = 0;
+        if (0 <= h && h < 60) {
+            r_ = c;
+            g_ = x;
+            b_ = 0;
+        } else if (60 <= h && h < 120) {
+            r_ = x;
+            g_ = c;
+            b_ = 0;
+        } else if (120 <= h && h < 180) {
+            r_ = 0;
+            g_ = c;
+            b_ = x;
+        } else if (180 <= h && h < 240) {
+            r_ = 0;
+            g_ = x;
+            b_ = c;
+        } else if (240 <= h && h < 300) {
+            r_ = x;
+            g_ = 0;
+            b_ = c;
+        } else if (300 <= h) {
+            r_ = c;
+            g_ = 0;
+            b_ = x;
+        }
+        return ARGB.color(alpha, (int)(r_+m)*255, (int)(g_+m)*255, (int)(b_+m)*255);
     }
 
 }
