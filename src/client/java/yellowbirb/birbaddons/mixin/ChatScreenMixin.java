@@ -73,7 +73,7 @@ public abstract class ChatScreenMixin extends Screen {
             };
             if (prefix != null) {
                 ci.cancel();
-                this.minecraft.player.connection.sendChat(prefix + msg);
+                this.minecraft.player.connection.sendCommand(prefix + msg);
             }
         }
     }

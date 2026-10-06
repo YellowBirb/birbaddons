@@ -11,8 +11,6 @@ import java.util.function.Consumer;
 
 public class ChatTabs extends Feature {
 
-    // TODO: when disabling, messages dont get added back into chat, need to call rescaleChat when disabling (onDisable in Feature?)
-
     public Tab chatTab = Tab.ALL;
     public ConfigBoolean redirect = new ConfigBoolean(ID, "redirect", false);
 
