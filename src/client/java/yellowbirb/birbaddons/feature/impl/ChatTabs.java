@@ -1,5 +1,6 @@
 package yellowbirb.birbaddons.feature.impl;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import yellowbirb.birbaddons.config.ConfigBoolean;
@@ -11,7 +12,6 @@ import java.util.function.Consumer;
 public class ChatTabs extends Feature {
 
     // TODO: when disabling, messages dont get added back into chat, need to call rescaleChat when disabling (onDisable in Feature?)
-    // TODO: ConfigBoolean: redirectMessages into Tab
 
     public Tab chatTab = Tab.ALL;
     public ConfigBoolean redirect = new ConfigBoolean(ID, "redirect", false);
@@ -56,6 +56,12 @@ public class ChatTabs extends Feature {
         GUILD,
         PRIVATE,
         COOP
+    }
+
+    @Override
+    public void onDisable() {
+        chatTab = Tab.ALL;
+        Minecraft.getInstance().gui.getChat().rescaleChat();
     }
 
     @Override

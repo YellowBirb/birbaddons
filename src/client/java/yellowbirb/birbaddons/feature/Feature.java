@@ -28,6 +28,7 @@ public abstract class Feature {
 
     public void disable() {
         enabled.set(false);
+        onDisable();
     }
 
     public boolean enabled() {
@@ -43,6 +44,8 @@ public abstract class Feature {
             return true;
         }
     }
+
+    public void onDisable() {}
 
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         LiteralArgumentBuilder<FabricClientCommandSource> command = ClientCommands.literal(ID.toLowerCase());
