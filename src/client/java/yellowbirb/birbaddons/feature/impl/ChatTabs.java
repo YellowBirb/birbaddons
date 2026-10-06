@@ -59,7 +59,7 @@ public class ChatTabs extends Feature {
     @Override
     public void onDisable() {
         chatTab = Tab.ALL;
-        Minecraft.getInstance().gui.getChat().rescaleChat();
+        Minecraft.getInstance().gui.hud.getChat().rescaleChat();
     }
 
     @Override

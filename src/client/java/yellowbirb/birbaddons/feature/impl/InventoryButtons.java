@@ -25,7 +25,7 @@ public class InventoryButtons extends Feature {
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand() {
         return super.getCommand().executes((_)->{
             Minecraft client = Minecraft.getInstance();
-            client.schedule(() -> client.setScreen(new InventoryButtonEditScreen()));
+            client.schedule(() -> client.setScreenAndShow(new InventoryButtonEditScreen()));
             return 1;
         });
     }

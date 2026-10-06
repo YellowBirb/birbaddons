@@ -169,7 +169,7 @@ public class AdrenalineBar extends Feature {
         client.schedule(()-> {
             AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
             float multt = adrenalineBar.mult.get();
-            client.setScreen(new HUDEditScreen(new FakeHUDWidget((int) adrenalineBar.pos.get().x(), (int) adrenalineBar.pos.get().y(), Math.round(104*multt), Math.round(32*multt), adrenalineBar.pos) {
+            client.setScreenAndShow(new HUDEditScreen(new FakeHUDWidget((int) adrenalineBar.pos.get().x(), (int) adrenalineBar.pos.get().y(), Math.round(104*multt), Math.round(32*multt), adrenalineBar.pos) {
                 @Override
                 protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 

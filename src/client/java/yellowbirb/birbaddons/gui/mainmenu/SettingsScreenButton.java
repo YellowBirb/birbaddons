@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class SettingsScreenButton extends AbstractWidget {
 
@@ -24,17 +25,17 @@ public class SettingsScreenButton extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
         if (!this.isActive()) {
             return false;
         }
         if (this.isValidClickButton(event.buttonInfo()) && (this.isMouseOver(event.x(), event.y()))) {
-            Minecraft.getInstance().setScreen(screen);
+            Minecraft.getInstance().setScreenAndShow(screen);
             return true;
         }
         return false;
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput output) {}
+    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {}
 }

@@ -51,7 +51,7 @@ public class InventoryButton extends AbstractDraggableWidget {
     }
 
     private void findScreen() {
-        this.screen = Minecraft.getInstance().screen;
+        this.screen = Minecraft.getInstance().gui.screen();
     }
 
     @Override

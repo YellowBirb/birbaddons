@@ -14,7 +14,7 @@ public class Command {
     public Command() {
         builder = ClientCommands.literal("ba").executes((_) -> {
             Minecraft client = Minecraft.getInstance();
-            client.schedule(()-> client.setScreen(new MenuScreen()));
+            client.schedule(()-> client.setScreenAndShow(new MenuScreen()));
             return 1;
         });
     }
@@ -28,7 +28,7 @@ public class Command {
             var ba = dispatcher.register(command);
             dispatcher.register(ClientCommands.literal("birbaddons").executes((_) -> {
                 Minecraft client = Minecraft.getInstance();
-                client.schedule(()-> client.setScreen(new MenuScreen()));
+                client.schedule(()-> client.setScreenAndShow(new MenuScreen()));
                 return 1;
             }).redirect(ba));
         });

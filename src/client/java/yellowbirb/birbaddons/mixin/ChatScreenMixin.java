@@ -36,7 +36,7 @@ public abstract class ChatScreenMixin extends Screen {
         ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
         if (chatTabs.enabled()) {
             Minecraft client = Minecraft.getInstance();
-            ChatComponent hud = client.gui.getChat();
+            ChatComponent hud = client.gui.hud.getChat();
             for (ChatTabs.Tab chatTab : ChatTabs.Tab.values()) {
                 String message = switch (chatTab) {
                     case ALL -> "A";

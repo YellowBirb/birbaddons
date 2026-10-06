@@ -78,7 +78,7 @@ public class InterCircleStrip implements RenderShape{
 
         //back face, so its visible from both sides
 
-        i1 = 0;
+        /*i1 = 0;
         i2 = 0;
 
         vy1 = y2;
@@ -93,7 +93,7 @@ public class InterCircleStrip implements RenderShape{
             vertexConsumer.addVertex(entry, c2Vertex).setColor(r, g, b, a);
             i1++;
             i2++;
-        }
+        }*/
     }
 
     private Vector3f getCircleVertex(int i, int segmentAmount, float radius, float x, float y, float z) {

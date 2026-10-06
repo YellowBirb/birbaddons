@@ -71,7 +71,8 @@ public class CircleXZ implements RenderShape{
 
             vertexConsumer.addVertex(entry, x1, y, z1)
                     .setColor(r, g, b, a)
-                    .setNormal(entry, normalVec);
+                    .setNormal(entry, normalVec)
+                    .setLineWidth(1);
         }
     }
 
