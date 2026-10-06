@@ -6,11 +6,12 @@ import yellowbirb.birbaddons.feature.Feature;
 public class ChatTabs extends Feature {
 
     // TODO: when disabling, messages dont get added back into chat, need to call rescaleChat when disabling (onDisable in Feature?)
+    // TODO: ConfigBoolean: redirectMessages into Tab
 
     public Tab chatTab = Tab.ALL;
 
     public ChatTabs() {
-        super("ChatTabs");
+        super("ChatTabs", "Chat Tabs");
     }
 
     // Thanks to Riccio for providing a less error-prone method

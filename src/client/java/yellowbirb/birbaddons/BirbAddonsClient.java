@@ -28,7 +28,6 @@ public class BirbAddonsClient implements ClientModInitializer {
 	private static final String MODRINTH_PROJECT_VERSION_API_LINK = "https://api.modrinth.com/v2/project/" + MODRINTH_PROJECT_ID + "/version";
 	private static final AtomicBoolean lookedForUpdate = new AtomicBoolean(false);
 
-	// TODO: menu
 	// TODO: chatpeek?
 
 	@Override

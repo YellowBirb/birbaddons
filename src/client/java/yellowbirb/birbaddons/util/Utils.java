@@ -58,7 +58,7 @@ public class Utils {
     public static int getMiningAbilityDuration(String ability, int level) {
         switch (ability) {
             case "Mining Speed Boost" -> {return 5+5*level;}
-            case "Pickobulus" -> {return 0;}
+            case "Pickobulus" -> {return 1;}
             case "Tunnel Vision" -> {return 30;}
             case "Maniac Miner" -> {return 20+5*level;}
             case "Gemstone Infusion", "Sheer Force" -> {return 15+5*level;}

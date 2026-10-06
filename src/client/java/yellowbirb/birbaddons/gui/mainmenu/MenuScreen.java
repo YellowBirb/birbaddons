@@ -3,6 +3,7 @@ package yellowbirb.birbaddons.gui.mainmenu;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -17,11 +18,12 @@ import yellowbirb.birbaddons.feature.Features;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MenuScreen extends Screen {
     private final List<Category> categories;
 
-    private final int categoryWidth = 100;
+    private final int categoryWidth = 110;
     private final int categoryHeight = 20;
     private final int categoryMargin = 5;
 
@@ -74,6 +76,40 @@ public class MenuScreen extends Screen {
     }
 
     @Override
+    public @NonNull Optional<GuiEventListener> getChildAt(double x, double y) {
+        List<GuiEventListener> res = getChildrenAt(x, y);
+        if (!res.isEmpty()) {
+            return Optional.of(res.getFirst());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public List<GuiEventListener> getChildrenAt(double x, double y) {
+        List<GuiEventListener> res = new ArrayList<>();
+        for (GuiEventListener guiEventListener : this.children().reversed()) {
+            if (!guiEventListener.isMouseOver(x, y)) continue;
+            res.add(guiEventListener);
+        }
+        return res;
+    }
+
+    @Override
+    public boolean mouseDragged(@NonNull MouseButtonEvent event, double dx, double dy) {
+        if (this.isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            Optional<GuiEventListener> child = getChildAt(event.x(), event.y());
+            if (child.isPresent()) {
+                child.get().mouseDragged(event, dx, dy);
+                return true;
+            }
+            else if (this.getFocused() != null) {
+                return this.getFocused().mouseDragged(event, dx, dy);
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean isPauseScreen() {
         return false;
     }
@@ -99,7 +135,7 @@ public class MenuScreen extends Screen {
 
             graphics.fill(getX(), getY(), getX()+x2, getY()+getHeight(), feature.enabled() ? enabledColor1 : disabledColor1);
             graphics.fill(getX()+ x2, getY(), getX()+getWidth(), getY()+getHeight(), feature.enabled() ? enabledColor2 : disabledColor2);
-            graphics.text(font, feature.ID, getX() + 2* x2, getY()+getHeight()/2 - font.lineHeight/2, feature.enabled() ? enabledColor3 : disabledColor3);
+            graphics.text(font, feature.name, getX() + 2* x2, getY()+getHeight()/2 - font.lineHeight/2, feature.enabled() ? enabledColor3 : disabledColor3);
         }
 
         @Override
@@ -107,7 +143,18 @@ public class MenuScreen extends Screen {
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                 feature.toggle();
             } else if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
-                // TODO: popup
+                FeatureSettingsPopup popup = feature.getSettingsPopup((int) event.x(), (int) event.y(), 150, 200, MenuScreen.this::removeWidget);
+                if (popup != null) {
+                    boolean flag = false;
+                    for (GuiEventListener child : children()) {
+                        if (child instanceof FeatureSettingsPopup existingPopup && existingPopup.title.equals(popup.title)) {
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        addRenderableWidget(popup);
+                    }
+                }
             }
         }
 

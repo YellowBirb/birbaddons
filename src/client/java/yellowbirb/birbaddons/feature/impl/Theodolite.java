@@ -21,7 +21,7 @@ public class Theodolite extends Feature {
     private static final String PELT_REWARD_MESSAGE = "Killing the animal rewarded you [1-9][0-9]? pelts.";
 
     public Theodolite() {
-        super("Theodolite");
+        super("Theodolite", "Theodolite");
 
         ReceiveGameMessageEvent.register(THEODOLITE_MESSAGE, (msg) -> {
             if (enabled.get()) {

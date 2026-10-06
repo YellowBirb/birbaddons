@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -25,7 +26,10 @@ import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
 import yellowbirb.birbaddons.feature.Feature;
 import yellowbirb.birbaddons.gui.FakeHUDWidget;
 import yellowbirb.birbaddons.gui.HUDEditScreen;
+import yellowbirb.birbaddons.gui.mainmenu.FeatureSettingsPopup;
 import yellowbirb.birbaddons.util.Utils;
+
+import java.util.function.Consumer;
 
 public class AdrenalineBar extends Feature {
 
@@ -57,7 +61,7 @@ public class AdrenalineBar extends Feature {
     private static final Identifier adrenalineBarFullAnimationTexture = Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "textures/gui/adrenalinebar/adrenalinefullanimation.png");
 
     public AdrenalineBar() {
-        super("AdrenalineBar");
+        super("AdrenalineBar", "Adrenaline Bar");
 
         pos = new ConfigVec2d(ID, "pos", new Vector2d(100, 100));
         mult = new ConfigFloat(ID, "mult", 1.0F);
@@ -132,14 +136,9 @@ public class AdrenalineBar extends Feature {
         available = false;
         abilityStartMillis = currentMillis;
         cooldownEndMillis = currentMillis + cooldownMillis;
+        inUse = true;
+        durationEndMillis = currentMillis + durationMillis;
 
-        if (ability.equals("Pickobulus")) {
-            inUse = false;
-            durationEndMillis = currentMillis;
-        } else {
-            inUse = true;
-            durationEndMillis = currentMillis + durationMillis;
-        }
     }
 
     public void expired() {
@@ -180,6 +179,28 @@ public class AdrenalineBar extends Feature {
                 }
             }));
         });
+    }
+
+    @Override
+    public FeatureSettingsPopup getSettingsPopup(int x, int y, int width, int height, Consumer<GuiEventListener> removeWidgetConsumer) {
+        return new FeatureSettingsPopup(x, y, width, height, removeWidgetConsumer, this.name){
+            @Override
+            protected void initSettings() {
+                AdrenalineBar adrenalineBar = BirbAddonsClient.getInstance().features.adrenalineBar;
+                float multt = adrenalineBar.mult.get();
+                HUDEditScreen screen = new HUDEditScreen(new FakeHUDWidget((int) adrenalineBar.pos.get().x(), (int) adrenalineBar.pos.get().y(), Math.round(104*multt), Math.round(32*multt), adrenalineBar.pos) {
+                    @Override
+                    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarBorderFullTexture, getX(), getY(), 0, 6, getWidth(), getHeight(), 104, 32, 104, 240);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarTexture, getX()+Math.round(12*multt), getY()+Math.round(14*multt), 0, 18, Math.round(80*multt), Math.round(8*multt), 80, 8, 80, 36);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, adrenalineBarFullAnimationTexture, getX()-Math.round(34*multt), getY()-Math.round(19*multt), 0, 350, Math.round(172*multt), Math.round(70*multt), 172, 70, 172, 700);
+                    }
+                });
+                addScreenButton("Open Edit Screen", screen);
+                addSwitch("Replay Full Sound", replayFullSound);
+            }
+        };
     }
 
     @Override

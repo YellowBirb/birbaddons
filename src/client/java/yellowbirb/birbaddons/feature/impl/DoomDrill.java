@@ -5,7 +5,7 @@ import yellowbirb.birbaddons.feature.Feature;
 public class DoomDrill extends Feature {
 
     public DoomDrill() {
-        super("DoomDrill");
+        super("DoomDrill", "Doom Drill");
     }
 
 }

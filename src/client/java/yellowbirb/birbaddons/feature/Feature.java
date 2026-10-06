@@ -3,16 +3,22 @@ package yellowbirb.birbaddons.feature;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import yellowbirb.birbaddons.config.ConfigBoolean;
+import yellowbirb.birbaddons.gui.mainmenu.FeatureSettingsPopup;
 import yellowbirb.birbaddons.util.Utils;
+
+import java.util.function.Consumer;
 
 public abstract class Feature {
 
-    public String ID;
+    public final String ID;
+    public final String name;
     protected ConfigBoolean enabled;
 
-    public Feature(String id) {
+    public Feature(String id, String name) {
         this.ID = id;
+        this.name = name;
         this.enabled = new ConfigBoolean(id, "enabled", false);
     }
 
@@ -64,5 +70,7 @@ public abstract class Feature {
         return command;
     }
 
-
+    public FeatureSettingsPopup getSettingsPopup(int x, int y, int width, int height, Consumer<GuiEventListener> removeWidgetConsumer) {
+        return null;
+    }
 }
