@@ -64,7 +64,7 @@ public abstract class ChatScreenMixin extends Screen {
     @Inject(method = "handleChatInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;sendChat(Ljava/lang/String;)V"), cancellable = true)
     public void handleChatInput(String msg, boolean addToRecent, CallbackInfo ci) {
         ChatTabs chatTabs = BirbAddonsClient.getInstance().features.chatTabs;
-        if (chatTabs.enabled() && !msg.startsWith("/")) {
+        if (chatTabs.enabled() && chatTabs.redirect.get() && !msg.startsWith("/")) {
             String prefix = switch (chatTabs.chatTab) {
                 case ALL, PRIVATE -> null;
                 case PARTY -> "/pc ";

@@ -1,7 +1,12 @@
 package yellowbirb.birbaddons.feature.impl;
 
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
+import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.feature.Feature;
+import yellowbirb.birbaddons.gui.mainmenu.FeatureSettingsPopup;
+
+import java.util.function.Consumer;
 
 public class ChatTabs extends Feature {
 
@@ -9,6 +14,9 @@ public class ChatTabs extends Feature {
     // TODO: ConfigBoolean: redirectMessages into Tab
 
     public Tab chatTab = Tab.ALL;
+    public ConfigBoolean redirect = new ConfigBoolean(ID, "redirect", false);
+
+
 
     public ChatTabs() {
         super("ChatTabs", "Chat Tabs");
@@ -48,6 +56,16 @@ public class ChatTabs extends Feature {
         GUILD,
         PRIVATE,
         COOP
+    }
+
+    @Override
+    public FeatureSettingsPopup getSettingsPopup(int x, int y, int width, int height, Consumer<GuiEventListener> removeWidgetConsumer) {
+        return new FeatureSettingsPopup(x, y, width, height, removeWidgetConsumer, this.name){
+            @Override
+            protected void initSettings() {
+                addSwitch("redirect messages", redirect);
+            }
+        };
     }
 
 }
