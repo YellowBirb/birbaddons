@@ -20,6 +20,7 @@ public class ConfigInventoryButtonList extends ConfigValue<List<InventoryButton>
 
     public ConfigInventoryButtonList(String featureKey, String valueKey, List<InventoryButton> defaultValue) {
         super(featureKey, valueKey, defaultValue);
+        load();
         representation = getFromJsonElement(value);
     }
 

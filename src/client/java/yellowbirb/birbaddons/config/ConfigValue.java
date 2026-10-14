@@ -11,24 +11,32 @@ public abstract class ConfigValue<T> {
 
     protected final String featureKey;
     protected final String valueKey;
-    protected final JsonElement defaultValue;
+    private final T rawDefaultValue;
+    // converted lazily, as subclasses' conversion methods may depend on fields that are not yet set during construction
+    private JsonElement defaultValue;
     protected JsonElement value;
     protected int hash = 0;
 
     public ConfigValue(String featureKey, String valueKey, T defaultValue) {
         this.featureKey = featureKey;
         this.valueKey = valueKey;
-        this.defaultValue = getAsJsonElement(defaultValue);
-        load();
+        this.rawDefaultValue = defaultValue;
+    }
+
+    protected JsonElement getDefaultJson() {
+        if (defaultValue == null) {
+            defaultValue = getAsJsonElement(rawDefaultValue);
+        }
+        return defaultValue;
     }
 
     public void load() {
         if (value == null || hash != Config.hash()) {
             if (Config.get().has(featureKey)) {
                 JsonObject object = Config.get().getAsJsonObject(featureKey);
-                value = object.has(valueKey) ? object.get(valueKey) : defaultValue;
+                value = object.has(valueKey) ? object.get(valueKey) : getDefaultJson();
             } else {
-                value = defaultValue;
+                value = getDefaultJson();
             }
             hash = Config.hash();
         }

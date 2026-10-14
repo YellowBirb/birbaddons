@@ -1,10 +1,10 @@
 package yellowbirb.birbaddons.config;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import yellowbirb.birbaddons.BirbAddonsClient;
 
@@ -15,73 +15,121 @@ import java.util.function.Consumer;
 
 public class ConfigList<T> extends ConfigValue<List<T>>{
 
+    private static final Gson GSON = new Gson();
+
     private final Type type;
 
-    public ConfigList(String featureKey, String valueKey, List<T> defaultValue) {
-        super(featureKey, valueKey, defaultValue);
-        this.type = new TypeToken<T>(){}.getType();
+    // Live list handed out by get(). Edits to it (or its elements) are written to the config by sync().
+    private List<T> representation;
+    // The json element representation was parsed from, used to detect when the config value was replaced or reloaded.
+    private int representationSourceHash;
+
+    public ConfigList(String featureKey, String valueKey, Class<T> elementType, List<T> defaultValue) {
+        this(featureKey, valueKey, (Type) elementType, defaultValue);
     }
 
-    // TODO: test
-    // concern: getting an element, passing it and altering it will not affect actual value
+    /**
+     * For generic element types, e.g. {@code new TypeToken<List<String>>(){}.getType()}.
+     */
+    public ConfigList(String featureKey, String valueKey, Type elementType, List<T> defaultValue) {
+        super(featureKey, valueKey, defaultValue);
+        this.type = elementType;
+    }
+
+    /**
+     * Returns the live list. Changes to the list or to its elements are only persisted after calling {@link #sync()}.
+     */
+    @Override
+    public List<T> get() {
+        load();
+        if (representation == null || representationSourceHash != value.hashCode()) {
+            representation = getFromJsonElement(value);
+            representationSourceHash = value.hashCode();
+        }
+        return representation;
+    }
+
+    @Override
+    public void set(List<T> value) {
+        super.set(value);
+        representation = new ArrayList<>(value);
+        representationSourceHash = this.value.hashCode();
+    }
+
+    /**
+     * Writes the live list (including changes made to its elements) to the config.
+     */
+    public void sync() {
+        set(get());
+    }
 
     @Override
     public List<T> getFromJsonElement(JsonElement json) {
+        List<T> res = new ArrayList<>();
         if (!json.isJsonArray()) {
-            BirbAddonsClient.LOGGER.warn("Could not load ConfigList {}:{} from config because it is not an array, returning empty list", this.featureKey, this.valueKey);
-            return new ArrayList<>();
+            BirbAddonsClient.LOGGER.warn("Could not load ConfigList {}.{} from config because it is not an array, returning empty list", this.featureKey, this.valueKey);
+            return res;
         }
 
-        List<T> res = new ArrayList<>();
-        Gson gson = new Gson();
         for (JsonElement element : json.getAsJsonArray()) {
-            res.add(getElementFromJsonElement(gson, element));
+            res.add(getElementFromJsonElement(element));
         }
         return res;
     }
 
     public T getElementFromJsonElement(JsonElement element) {
-        return getElementFromJsonElement(new Gson(), element);
-    }
-
-    public T getElementFromJsonElement(Gson gson, JsonElement element) {
-        return gson.fromJson(element, type);
+        return GSON.fromJson(element, type);
     }
 
     @Override
     public JsonElement getAsJsonElement(List<T> value) {
         JsonArray array = new JsonArray();
-        Gson gson = new Gson();
         for (T element : value) {
-            array.add(getElementAsJsonElement(gson, element));
+            array.add(getElementAsJsonElement(element));
         }
         return array;
     }
 
     public JsonElement getElementAsJsonElement(T value) {
-        return getElementAsJsonElement(new Gson(), value);
+        return GSON.toJsonTree(value, type);
     }
 
-    public JsonElement getElementAsJsonElement(Gson gson, T value) {
-        return gson.toJsonTree(value, type);
-    }
-
+    /**
+     * Applies an operation to the list and persists the result.
+     */
     public void operation(Consumer<List<T>> consumer) {
-        List<T> representation = getFromJsonElement(this.value);
-        consumer.accept(representation);
-        set(getAsJsonElement(representation));
+        consumer.accept(get());
+        sync();
+    }
+
+    /**
+     * Applies a mutation to the element at the given index and persists the result.
+     */
+    public void update(int index, Consumer<T> mutator) {
+        mutator.accept(get().get(index));
+        sync();
     }
 
     public void add(T value) {
-        this.value.getAsJsonArray().add(getElementAsJsonElement(value));
+        operation(l -> l.add(value));
     }
 
-    public void remove(T value) {
-        this.value.getAsJsonArray().remove(getElementAsJsonElement(value));
+    public boolean remove(T value) {
+        boolean[] removed = new boolean[1];
+        operation(l -> removed[0] = l.remove(value));
+        return removed[0];
+    }
+
+    public int indexOf(T element) {
+        return get().indexOf(element);
+    }
+
+    public void set(int index, T element) {
+        operation(l -> l.set(index, element));
     }
 
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> getCommand(Consumer<List<T>> consumer) {
-        return null;
+        return ClientCommands.literal(valueKey);
     }
 }
