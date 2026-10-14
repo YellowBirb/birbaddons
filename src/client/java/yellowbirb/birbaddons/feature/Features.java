@@ -48,7 +48,7 @@ public class Features {
                 Utils.displayMessage(ctx.getSource().getPlayer(), "disabled " + f.ID);
                 return 1;
             }));
-            disable.then(ClientCommands.literal(f.ID.toLowerCase()).executes((ctx) -> {
+            toggle.then(ClientCommands.literal(f.ID.toLowerCase()).executes((ctx) -> {
                 if (f.toggle()) {
                     Utils.displayMessage(ctx.getSource().getPlayer(), "enabled " + f.ID);
                 } else {
