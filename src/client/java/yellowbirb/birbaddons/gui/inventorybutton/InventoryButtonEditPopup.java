@@ -4,7 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -13,57 +15,56 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jspecify.annotations.NonNull;
 import yellowbirb.birbaddons.BirbAddonsClient;
+import yellowbirb.birbaddons.gui.AbstractSubScreenWidget;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
-public class InventoryButtonEditPopup extends AbstractWidget {
+public class InventoryButtonEditPopup extends AbstractSubScreenWidget {
 
-    public static final int width = 150;
-    public static int height = 100;
+    public static final int initWidth = 150;
+    public static final int initHeight = 100;
     public static final int margin = 5;
     public static final int smallMargin = 2;
     private final InventoryButton button;
     private final InventoryButtonEditScreen screen;
 
-    public List<AbstractWidget> widgets;
-    public List<Renderable> renderables;
-
-    public Renderable background;
     public Renderable icon;
     public Renderable iconText;
     public DelButton delButton;
-    public IBEPUpdatingEditBox iconBox;
+    public EditBox iconBox;
     public Renderable commandText;
     public Renderable slash;
-    public IBEPUpdatingEditBox commandBox;
+    public EditBox commandBox;
     public Renderable widthText;
-    public IBEPUpdatingEditBox widthBox;
+    public EditBox widthBox;
     public Renderable heightText;
-    public IBEPUpdatingEditBox heightBox;
+    public EditBox heightBox;
 
 
-    public InventoryButtonEditPopup(int x, int y, InventoryButton button, InventoryButtonEditScreen screen) {
-        super(x, y, width, height, Component.literal(""));
+    public InventoryButtonEditPopup(int x, int y, InventoryButton button, InventoryButtonEditScreen screen, Consumer<GuiEventListener> removeWidgetConsumer) {
         this.button = button;
         this.screen = screen;
-        this.renderables = new ArrayList<>();
-        this.widgets = new ArrayList<>();
+        super(x, y, initWidth, initHeight, removeWidgetConsumer);
+    }
 
-        Font font = this.screen.getFont();
+    protected void init() {
+
+        Font font = Minecraft.getInstance().font;
         int editBoxHeight = Math.round(this.screen.getFont().lineHeight*1.5F);
 
-        background = (graphics, _, _, _) -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "widget/custombutton"), getX(), getY(), getWidth(), getHeight());
+        // Renderables are not moved when the popup is dragged, so they are drawn at their initial position plus how far the popup has moved
+        final int originX = getX();
+        final int originY = getY();
 
         int iconX0 = getX()+margin;
         int iconY0 = getY()+margin;
         int iconX1 = getX()+margin+18;
         int iconY1 = getY()+margin+18;
-        icon = (graphics, _, _, _) -> graphics.fill(iconX0, iconY0, iconX1, iconY1, 0xFF00FF00);
+        icon = (graphics, _, _, _) -> graphics.fill(iconX0 + getX() - originX, iconY0 + getY() - originY, iconX1 + getX() - originX, iconY1 + getY() - originY, 0xFF00FF00);
 
-        iconText = (graphics, _, _, _) -> graphics.text(font, "Icon", getX() + margin, iconY1 - font.lineHeight, ARGB.white(1.0F));
+        iconText = (graphics, _, _, _) -> graphics.text(font, "Icon", getX() + margin, iconY1 + getY() - originY - font.lineHeight, ARGB.white(1.0F));
 
-        int delButtonX = getX()+width-16-margin;
+        int delButtonX = getX()+ getWidth() -16-margin;
         int delButtonY = getY() + margin;
         int delButtonWidth = 16;
         int delButtonHeight = 16;
@@ -71,78 +72,77 @@ public class InventoryButtonEditPopup extends AbstractWidget {
 
         int iconBoxX = getX() + margin;
         int iconBoxY = iconY1 + smallMargin;
-        int iconBoxWidth = width-2*margin;
+        int iconBoxWidth = getWidth() -2*margin;
         int iconBoxHeight = editBoxHeight;
-        this.iconBox = new IBEPUpdatingEditBox(font, iconBoxX, iconBoxY, iconBoxWidth, iconBoxHeight, Component.literal(""), this);
+        this.iconBox = new EditBox(font, iconBoxX, iconBoxY, iconBoxWidth, iconBoxHeight, Component.literal(""));
 
         int commandTextX = this.getX() + margin;
         int commandTextY = iconBoxY + iconBoxHeight + margin;
-        commandText = (graphics, _, _, _) -> graphics.text(font, "Command", commandTextX, commandTextY, ARGB.white(1.0F));
+        commandText = (graphics, _, _, _) -> graphics.text(font, "Command", commandTextX + getX() - originX, commandTextY + getY() - originY, ARGB.white(1.0F));
 
         int slashX = this.getX() + margin + smallMargin;
         int slashY = commandTextY + font.lineHeight + smallMargin + (editBoxHeight/2 - font.lineHeight/2);
-        slash = (graphics, _, _, _) -> graphics.text(font, "/", slashX, slashY, ARGB.white(1.0F));
+        slash = (graphics, _, _, _) -> graphics.text(font, "/", slashX + getX() - originX, slashY + getY() - originY, ARGB.white(1.0F));
 
         int commandBoxX = slashX + font.width("/") + smallMargin;
         int commandBoxY = commandTextY + font.lineHeight + smallMargin;
-        int commandBoxWidth = width - (commandBoxX-getX()) - margin;
+        int commandBoxWidth = getWidth() - (commandBoxX-getX()) - margin;
         int commandBoxHeight = editBoxHeight;
-        this.commandBox = new IBEPUpdatingEditBox(font, commandBoxX,  commandBoxY, commandBoxWidth, commandBoxHeight, Component.literal(""), this);
+        this.commandBox = new EditBox(font, commandBoxX,  commandBoxY, commandBoxWidth, commandBoxHeight, Component.literal(""));
 
         int widthTextX = this.getX() + margin + smallMargin;
         int widthTextY = commandBoxY + commandBoxHeight + margin + (editBoxHeight/2 - font.lineHeight/2);
-        widthText = (graphics, _, _, _) -> graphics.text(font, "Width", widthTextX, widthTextY, ARGB.white(1.0F));
+        widthText = (graphics, _, _, _) -> graphics.text(font, "Width", widthTextX + getX() - originX, widthTextY + getY() - originY, ARGB.white(1.0F));
 
         int widthBoxX = widthTextX + font.width("Width") + smallMargin;
         int widthBoxY = commandBoxY + commandBoxHeight + margin;
         int widthBoxWidth = 30;
         int widthBoxHeight = editBoxHeight;
-        this.widthBox = new IBEPUpdatingEditBox(font, widthBoxX,  widthBoxY, widthBoxWidth, widthBoxHeight, Component.literal(""), this);
+        this.widthBox = new EditBox(font, widthBoxX,  widthBoxY, widthBoxWidth, widthBoxHeight, Component.literal(""));
 
         int heightTextX = widthBoxX + widthBoxWidth + margin + smallMargin;
         int heightTextY = widthTextY;
-        heightText = (graphics, _, _, _) -> graphics.text(font, "Height", heightTextX, heightTextY, ARGB.white(1.0F));
+        heightText = (graphics, _, _, _) -> graphics.text(font, "Height", heightTextX + getX() - originX, heightTextY + getY() - originY, ARGB.white(1.0F));
 
         int heightBoxX = heightTextX + font.width("Height") + smallMargin;
         int heightBoxY = widthBoxY;
         int heightBoxWidth = 30;
         int heightBoxHeight = editBoxHeight;
-        this.heightBox = new IBEPUpdatingEditBox(font, heightBoxX,  heightBoxY, heightBoxWidth, heightBoxHeight, Component.literal(""), this);
+        this.heightBox = new EditBox(font, heightBoxX,  heightBoxY, heightBoxWidth, heightBoxHeight, Component.literal(""));
 
-        height = (heightBoxY + heightBoxHeight + margin) - getY();
-        setHeight(height);
+        int finalHeight = (heightBoxY + heightBoxHeight + margin) - getY();
+        setHeight(finalHeight);
 
-        init();
-    }
-
-    public void init() {
-
-        renderables.add(background);
         // TODO: icon
         // renderables.add(icon);
-        renderables.add(iconText);
-        renderables.add(commandText);
-        renderables.add(slash);
-        renderables.add(widthText);
-        renderables.add(heightText);
+        addRenderableOnly(iconText);
+        addRenderableOnly(commandText);
+        addRenderableOnly(slash);
+        addRenderableOnly(widthText);
+        addRenderableOnly(heightText);
 
         commandBox.setValue(button.command);
+        commandBox.setResponder(_ -> saveButton());
         iconBox.setValue(button.icon);
+        iconBox.setResponder(_ -> saveButton());
         widthBox.setValue(String.valueOf(button.getWidth()));
+        widthBox.setResponder(_ -> saveButton());
         heightBox.setValue(String.valueOf(button.getHeight()));
+        heightBox.setResponder(_ -> saveButton());
 
-        widgets.add(commandBox);
-        widgets.add(iconBox);
-        widgets.add(delButton);
-        widgets.add(widthBox);
-        widgets.add(heightBox);
-
-        for (AbstractWidget lis : widgets) {
-            screen.addRenderableWidget(lis);
-        }
-
-
+        addRenderableWidget(commandBox);
+        addRenderableWidget(iconBox);
+        addRenderableWidget(delButton);
+        addRenderableWidget(widthBox);
+        addRenderableWidget(heightBox);
     }
+
+    @Override
+    public int getX() {
+        return super.getX();
+    }
+
+
 
     public void saveButton() {
         button.command = commandBox.getValue();
@@ -155,30 +155,8 @@ public class InventoryButtonEditPopup extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        for (Renderable ren : renderables) {
-            ren.extractRenderState(graphics, mouseX, mouseY, a);
-        }
-        for (AbstractWidget lis : widgets) {
-            lis.extractRenderState(graphics, mouseX, mouseY, a);
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
-        if (!this.isActive()) {
-            return false;
-        }
-        if (this.isValidClickButton(event.buttonInfo()) && this.isMouseOver(event.x(), event.y())) {
-            this.onClick(event, doubleClick);
-            //return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
-
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "widget/custombutton"), getX(), getY(), getWidth(), getHeight());
     }
 
     private class DelButton extends AbstractWidget {

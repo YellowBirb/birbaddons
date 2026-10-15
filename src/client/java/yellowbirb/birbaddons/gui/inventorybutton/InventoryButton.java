@@ -41,17 +41,13 @@ public class InventoryButton extends AbstractDraggableWidget {
 
     public Screen getScreen() {
         if (this.screen == null) {
-            findScreen();
+            this.screen = Minecraft.getInstance().gui.screen();
         }
         return this.screen;
     }
 
     public void setScreen(Screen screen) {
         this.screen = screen;
-    }
-
-    private void findScreen() {
-        this.screen = Minecraft.getInstance().gui.screen();
     }
 
     @Override
@@ -79,7 +75,7 @@ public class InventoryButton extends AbstractDraggableWidget {
         boolean flag = false;
         for (GuiEventListener lis : ibes.children()) {
             if (lis instanceof InventoryButtonEditPopup ibep) {
-                if (event.x() > ibep.getX() && event.x() < ibep.getX()+ibep.getHeight() && event.y() > ibep.getY() && event.y() < ibep.getY()+ibep.getHeight()) {
+                if (event.x() > ibep.getX() && event.x() < ibep.getX()+ibep.getWidth() && event.y() > ibep.getY() && event.y() < ibep.getY()+ibep.getHeight()) {
                     flag = true;
                 }
             }
@@ -111,9 +107,9 @@ public class InventoryButton extends AbstractDraggableWidget {
         if (getScreen() instanceof InventoryButtonEditScreen ibes) {
             if (!isDragging && !mouseOnPopup(event, ibes)) {
                 ibes.addRenderableWidget(new InventoryButtonEditPopup(
-                        (event.x() + InventoryButtonEditPopup.width > ibes.width) ? (int) event.x() - InventoryButtonEditPopup.width : (int) event.x(),
-                        (event.y() + InventoryButtonEditPopup.height > ibes.height) ? (int) event.y() - InventoryButtonEditPopup.height : (int) event.y(),
-                        this, ibes));
+                        (event.x() + InventoryButtonEditPopup.initWidth > ibes.width) ? (int) event.x() - InventoryButtonEditPopup.initWidth : (int) event.x(),
+                        (event.y() + InventoryButtonEditPopup.initHeight > ibes.height) ? (int) event.y() - InventoryButtonEditPopup.initHeight : (int) event.y(),
+                        this, ibes, ibes::removeWidget));
             } else {
                 isDragging = false;
             }

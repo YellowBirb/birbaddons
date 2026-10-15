@@ -1,7 +1,6 @@
 package yellowbirb.birbaddons.gui.inventorybutton;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -35,6 +34,11 @@ public class InventoryButtonEditScreen extends Screen {
     @Override
     public <T extends GuiEventListener & Renderable & NarratableEntry> @NonNull T addRenderableWidget(@NonNull T widget) {
         return super.addRenderableWidget(widget);
+    }
+
+    @Override
+    public void removeWidget(@NonNull GuiEventListener widget) {
+        super.removeWidget(widget);
     }
 
     @Override
@@ -87,10 +91,6 @@ public class InventoryButtonEditScreen extends Screen {
             }
         }
         for (InventoryButtonEditPopup ibep2 : del) {
-            ibep2.saveButton();
-            for (AbstractWidget widget : ibep2.widgets) {
-                this.removeWidget(widget);
-            }
             this.removeWidget(ibep2);
         }
         return flag;
@@ -105,11 +105,6 @@ public class InventoryButtonEditScreen extends Screen {
 
     @Override
     public void onClose() {
-        for (GuiEventListener widget : this.children()) {
-            if (widget instanceof InventoryButtonEditPopup ibep) {
-                ibep.saveButton();
-            }
-        }
         BirbAddonsClient.getInstance().features.inventoryButtons.buttons.syncRepresentation();
         Config.save();
         super.onClose();

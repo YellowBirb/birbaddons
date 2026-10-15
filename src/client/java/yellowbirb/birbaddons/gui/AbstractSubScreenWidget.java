@@ -158,6 +158,14 @@ public abstract class AbstractSubScreenWidget extends AbstractDraggableWidget im
     }
 
     @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
+        if (!focused && getFocused()!=null) {
+            getFocused().setFocused(false);
+        }
+    }
+
+    @Override
     protected void onDrag(@NonNull MouseButtonEvent event, double dx, double dy) {
         int ndx = (int) Math.round(dx+dragOffsetX);
         int ndy = (int) Math.round(dy+dragOffsetY);
