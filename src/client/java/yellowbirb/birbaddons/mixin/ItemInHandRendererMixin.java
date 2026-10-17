@@ -20,7 +20,11 @@ import yellowbirb.birbaddons.util.Utils;
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
 
-    // disable drill moving in hand: no swinging the drill when mining
+    // disable drill moving in hand:
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  NoSwing: no swinging the drill when mining
+     */
     @WrapMethod(method = "swingArm")
     private void swingArm(float attack, PoseStack poseStack, int invert, HumanoidArm arm, Operation<Void> original) {
         NoSwing noSwing = BirbAddonsClient.getInstance().features.noSwing;
@@ -38,7 +42,10 @@ public class ItemInHandRendererMixin {
         }
     }
 
-    // disable drill moving in hand: doomdrill functionality
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  DoomDrill: doomdrill functionality
+     */
     @WrapMethod(method = "renderItem")
     public void renderItem(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, Operation<Void> original) {
         if (BirbAddonsClient.getInstance().features.doomDrill.enabled()) {
@@ -52,8 +59,10 @@ public class ItemInHandRendererMixin {
         original.call(mob, itemStack, type, poseStack, submitNodeCollector, lightCoords);
     }
 
-    // disable drill moving in hand: fixed small visual bug if doomdrill is active and switched off of
-    //                               Would otherwise flash into regular position just before changing
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  DoomDrill: visual bug fix
+     */
     @WrapMethod(method = "shouldInstantlyReplaceVisibleItem")
     private boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
         if (BirbAddonsClient.getInstance().features.doomDrill.enabled() && Utils.isDrill(currentlyVisibleItem)) {

@@ -16,44 +16,52 @@ import yellowbirb.birbaddons.gui.AbstractDraggableWidget;
 
 public class InventoryButton extends AbstractDraggableWidget {
 
-    public String command;
-    public String icon;
-    private Screen screen;
+    private final InventoryButtonData data;
+    private final Screen screen;
     private boolean isDragging = false;
 
-    public InventoryButton(int x, int y, int width, int height, Component message, String command, String icon) {
-        super(x, y, width, height, message);
-        this.command = command;
-        this.icon = icon;
+    public InventoryButton(InventoryButtonData data, Screen screen) {
+        this.data = data;
+        this.screen = screen;
+        super(data.x, data.y, data.width, data.height, Component.literal(""));
     }
 
-    public InventoryButton(int x, int y, int width, int height, String command, String icon) {
-        this(x, y, width, height, Component.literal(""), command, icon);
-    }
-
-    public InventoryButton(int x, int y, String command, String icon) {
-        this(x, y, 18, 18, command, icon);
-    }
-
-    public InventoryButton(int x, int y) {
-        this(x, y, 18, 18, "", "");
+    public InventoryButtonData data() {
+        return data;
     }
 
     public Screen getScreen() {
-        if (this.screen == null) {
-            this.screen = Minecraft.getInstance().gui.screen();
-        }
         return this.screen;
     }
 
-    public void setScreen(Screen screen) {
-        this.screen = screen;
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        if (data != null) data.x = x;
+    }
+
+    @Override
+    public void setY(int y) {
+        super.setY(y);
+        if (data != null) data.y = y;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        if (data != null) data.width = width;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        if (data != null) data.height = height;
     }
 
     @Override
     public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "widget/custombutton"), getX(), getY(), getWidth(), getHeight());
-        graphics.centeredText(getScreen().getFont(), icon, getX() + getWidth()/2, getY() + getHeight()/2 -getScreen().getFont().lineHeight/2, ARGB.white(1F));
+        graphics.centeredText(getScreen().getFont(), data.icon, getX() + getWidth()/2, getY() + getHeight()/2 -getScreen().getFont().lineHeight/2, ARGB.white(1F));
     }
 
     protected void onDrag(@NonNull MouseButtonEvent event, double dx, double dy) {
@@ -67,7 +75,7 @@ public class InventoryButton extends AbstractDraggableWidget {
         if (getScreen() instanceof InventoryButtonEditScreen ibes) {
             ibes.clearPopups();
         } else {
-            Minecraft.getInstance().player.connection.sendCommand(!command.isEmpty() && command.charAt(0) == '/' ? command.substring(1) : command);
+            Minecraft.getInstance().player.connection.sendCommand(!data.command.isEmpty() && data.command.charAt(0) == '/' ? data.command.substring(1) : data.command);
         }
     }
 

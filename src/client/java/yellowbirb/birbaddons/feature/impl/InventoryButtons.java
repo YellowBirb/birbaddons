@@ -4,8 +4,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import yellowbirb.birbaddons.config.ConfigInventoryButtonList;
+import yellowbirb.birbaddons.config.ConfigList;
 import yellowbirb.birbaddons.feature.Feature;
+import yellowbirb.birbaddons.gui.inventorybutton.InventoryButtonData;
 import yellowbirb.birbaddons.gui.inventorybutton.InventoryButtonEditScreen;
 import yellowbirb.birbaddons.gui.mainmenu.FeatureSettingsPopup;
 
@@ -14,11 +15,11 @@ import java.util.function.Consumer;
 
 public class InventoryButtons extends Feature {
 
-    public ConfigInventoryButtonList buttons;
+    public ConfigList<InventoryButtonData> buttons;
 
     public InventoryButtons() {
         super("InventoryButtons", "Inventory Buttons");
-        buttons = new ConfigInventoryButtonList(ID, "list", List.of());
+        buttons = new ConfigList<>(ID, "list", InventoryButtonData.class, List.of());
     }
 
     @Override

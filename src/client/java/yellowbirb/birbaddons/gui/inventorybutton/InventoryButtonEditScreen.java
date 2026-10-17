@@ -25,9 +25,8 @@ public class InventoryButtonEditScreen extends Screen {
 
     @Override
     protected void init() {
-        for (InventoryButton button : BirbAddonsClient.getInstance().features.inventoryButtons.buttons.get()) {
-            button.setScreen(this);
-            addRenderableWidget(button);
+        for (InventoryButtonData data : BirbAddonsClient.getInstance().features.inventoryButtons.buttons.get()) {
+            addRenderableWidget(new InventoryButton(data, this));
         }
     }
 
@@ -64,7 +63,7 @@ public class InventoryButtonEditScreen extends Screen {
         }
         else {
             if (!clearPopups()) {
-                BirbAddonsClient.getInstance().features.inventoryButtons.buttons.add(new InventoryButton((int) Math.round(event.x()), (int) Math.round(event.y())));
+                BirbAddonsClient.getInstance().features.inventoryButtons.buttons.add(new InventoryButtonData((int) Math.round(event.x()), (int) Math.round(event.y())));
             }
             this.rebuildWidgets();
         }
@@ -90,6 +89,9 @@ public class InventoryButtonEditScreen extends Screen {
                 flag = true;
             }
         }
+        if (flag) {
+            BirbAddonsClient.getInstance().features.inventoryButtons.buttons.sync();
+        }
         for (InventoryButtonEditPopup ibep2 : del) {
             this.removeWidget(ibep2);
         }
@@ -105,7 +107,7 @@ public class InventoryButtonEditScreen extends Screen {
 
     @Override
     public void onClose() {
-        BirbAddonsClient.getInstance().features.inventoryButtons.buttons.syncRepresentation();
+        BirbAddonsClient.getInstance().features.inventoryButtons.buttons.sync();
         Config.save();
         super.onClose();
     }

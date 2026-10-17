@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.feature.impl.InventoryButtons;
 import yellowbirb.birbaddons.gui.inventorybutton.InventoryButton;
+import yellowbirb.birbaddons.gui.inventorybutton.InventoryButtonData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +55,16 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         this.itemSlotMouseActions = new ArrayList<>();
     }
 
-    // Inventory Buttons: Inject buttons into Menus
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  Inventory Buttons: Inject buttons into Menus
+     */
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         InventoryButtons inventoryButtons = BirbAddonsClient.getInstance().features.inventoryButtons;
         if (inventoryButtons.enabled()) {
-            for (InventoryButton button : inventoryButtons.buttons.get()) {
-                button.setScreen(this);
-                addRenderableWidget(button);
+            for (InventoryButtonData data : inventoryButtons.buttons.get()) {
+                addRenderableWidget(new InventoryButton(data, this));
             }
         }
     }

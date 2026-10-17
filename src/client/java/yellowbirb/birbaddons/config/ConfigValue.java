@@ -12,7 +12,6 @@ public abstract class ConfigValue<T> {
     protected final String featureKey;
     protected final String valueKey;
     private final T rawDefaultValue;
-    // converted lazily, as subclasses' conversion methods may depend on fields that are not yet set during construction
     private JsonElement defaultValue;
     protected JsonElement value;
     protected int hash = 0;

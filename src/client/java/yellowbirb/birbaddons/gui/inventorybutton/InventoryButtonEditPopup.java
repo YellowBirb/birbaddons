@@ -121,37 +121,30 @@ public class InventoryButtonEditPopup extends AbstractSubScreenWidget {
         addRenderableOnly(widthText);
         addRenderableOnly(heightText);
 
-        commandBox.setValue(button.command);
-        commandBox.setResponder(_ -> saveButton());
-        iconBox.setValue(button.icon);
-        iconBox.setResponder(_ -> saveButton());
+        commandBox.setValue(button.data().command);
+        commandBox.setResponder(_ -> button.data().command = commandBox.getValue());
+        iconBox.setValue(button.data().icon);
+        iconBox.setResponder(_ -> button.data().icon = iconBox.getValue());
         widthBox.setValue(String.valueOf(button.getWidth()));
-        widthBox.setResponder(_ -> saveButton());
+        widthBox.setResponder(_ -> {
+            try {
+                button.setWidth(Integer.parseInt(widthBox.getValue()));
+            } catch (NumberFormatException _) {
+            }
+        });
         heightBox.setValue(String.valueOf(button.getHeight()));
-        heightBox.setResponder(_ -> saveButton());
+        heightBox.setResponder(_ -> {
+            try {
+                button.setHeight(Integer.parseInt(heightBox.getValue()));
+            } catch (NumberFormatException _) {
+            }
+        });
 
         addRenderableWidget(commandBox);
         addRenderableWidget(iconBox);
         addRenderableWidget(delButton);
         addRenderableWidget(widthBox);
         addRenderableWidget(heightBox);
-    }
-
-    @Override
-    public int getX() {
-        return super.getX();
-    }
-
-
-
-    public void saveButton() {
-        button.command = commandBox.getValue();
-        button.icon = iconBox.getValue();
-        try {
-            button.setWidth(Integer.parseInt(widthBox.getValue()));
-            button.setHeight(Integer.parseInt(heightBox.getValue()));
-        } catch (NumberFormatException _) {
-        }
     }
 
     @Override
@@ -172,7 +165,7 @@ public class InventoryButtonEditPopup extends AbstractSubScreenWidget {
             }
             if (this.isValidClickButton(event.buttonInfo()) && (this.isMouseOver(event.x(), event.y()))) {
                 this.playDownSound(Minecraft.getInstance().getSoundManager());
-                BirbAddonsClient.getInstance().features.inventoryButtons.buttons.remove(button);
+                BirbAddonsClient.getInstance().features.inventoryButtons.buttons.remove(button.data());
                 screen.rebuildWidgets();
                 return true;
             }

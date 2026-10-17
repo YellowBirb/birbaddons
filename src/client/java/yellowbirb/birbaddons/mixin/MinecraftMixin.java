@@ -9,8 +9,11 @@ import yellowbirb.birbaddons.config.Config;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  Save Config on Game close
+     */
     @Inject(method = "close", at = @At("HEAD"))
-    // save config on closing the game
     public void onClose(CallbackInfo ci) {
         Config.save();
     }

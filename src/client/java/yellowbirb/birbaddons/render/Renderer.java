@@ -24,6 +24,7 @@ public class Renderer {
 
     private static final StagedVertexBuffer stagedBuffer = new StagedVertexBuffer(() -> "BirbAddons Renderer Buffer", RenderType.SMALL_BUFFER_SIZE);
 
+    // TODO: batching
 
     public static void drawShape(LevelRenderContext ctx, RenderShape shape) {
 

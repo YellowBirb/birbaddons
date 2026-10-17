@@ -6,6 +6,8 @@ import yellowbirb.birbaddons.render.shapes.InterCircleStrip;
 import static java.lang.Math.*;
 
 public class RenderUtils {
+
+    // TODO: weird seam at lowest X
     public static void drawBoxyRing(double alpha, int deltaY, float playerX, float playerY, float playerZ,
                                     float angleMargin, float heightMargin,
                                     int boxyRingInnerColorR, int boxyRingInnerColorG, int boxyRingInnerColorB, int boxyRingInnerColorA, boolean boxyRingInnerVisibleThroughWalls,

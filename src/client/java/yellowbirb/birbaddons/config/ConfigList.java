@@ -19,9 +19,7 @@ public class ConfigList<T> extends ConfigValue<List<T>>{
 
     private final Type type;
 
-    // Live list handed out by get(). Edits to it (or its elements) are written to the config by sync().
     private List<T> representation;
-    // The json element representation was parsed from, used to detect when the config value was replaced or reloaded.
     private int representationSourceHash;
 
     public ConfigList(String featureKey, String valueKey, Class<T> elementType, List<T> defaultValue) {
@@ -36,9 +34,6 @@ public class ConfigList<T> extends ConfigValue<List<T>>{
         this.type = elementType;
     }
 
-    /**
-     * Returns the live list. Changes to the list or to its elements are only persisted after calling {@link #sync()}.
-     */
     @Override
     public List<T> get() {
         load();
@@ -56,9 +51,6 @@ public class ConfigList<T> extends ConfigValue<List<T>>{
         representationSourceHash = this.value.hashCode();
     }
 
-    /**
-     * Writes the live list (including changes made to its elements) to the config.
-     */
     public void sync() {
         set(get());
     }
@@ -94,17 +86,11 @@ public class ConfigList<T> extends ConfigValue<List<T>>{
         return GSON.toJsonTree(value, type);
     }
 
-    /**
-     * Applies an operation to the list and persists the result.
-     */
     public void operation(Consumer<List<T>> consumer) {
         consumer.accept(get());
         sync();
     }
 
-    /**
-     * Applies a mutation to the element at the given index and persists the result.
-     */
     public void update(int index, Consumer<T> mutator) {
         mutator.accept(get().get(index));
         sync();

@@ -11,7 +11,10 @@ import yellowbirb.birbaddons.util.Utils;
 
 @Mixin(ItemModelResolver.class)
 public class ItemModelResolverMixin {
-    // disable drill moving in hand: stop swap animation that plays when fuel/durability decreases
+    /**
+     * @author  yellowbirb - birbaddons
+     * @reason  NoSwing: No swap animation
+     */
     @WrapMethod(method = "swapAnimationScale")
     public float swapAnimationScale(ItemStack stack, Operation<Float> original) {
         NoSwing noSwing = BirbAddonsClient.getInstance().features.noSwing;
