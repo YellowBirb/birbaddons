@@ -2,6 +2,7 @@ package yellowbirb.birbaddons.render;
 
 import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.*;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -24,7 +25,7 @@ public class CustomRenderPipelines {
             .withDepthStencilState(DepthStencilState.DEFAULT)
             .buildSnippet();
 
-    // ----------------------------------------------------------------------------------------------------------------- // TODO: fix (squiggly lines, weird seam)
+    // -----------------------------------------------------------------------------------------------------------------
 
     public static final RenderPipeline LINES = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
@@ -40,6 +41,11 @@ public class CustomRenderPipelines {
                     .build()
     );
 
+    // Currently unused: rendertype_lines offsets vertices by gl_VertexID % 2, which only works with LINES (BufferBuilder
+    // duplicates each vertex into a quad). With a raw line strip this zigzags every other vertex, hence CircleXZ uses LINES.
+    // Possible strip alternative: draw lines as a TRIANGLE_STRIP ribbon, emitting each point twice with the tangent as normal,
+    // using a copy of rendertype_lines.vsh without the "if (lineOffset.x < 0.0) lineOffset *= -1.0" flip (it swaps the
+    // ribbon's sides wherever the screen tangent passes vertical and twists it). Gives real line width and seamless joins.
     public static final RenderPipeline LINE_STRIP = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/line_strip"))
@@ -63,7 +69,7 @@ public class CustomRenderPipelines {
                     .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/triangle_strip"))
                     .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
-                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
                     .build()
     );
 
@@ -79,7 +85,7 @@ public class CustomRenderPipelines {
     public static final RenderPipeline QUADS = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/triangle_strip_through_walls"))
-                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
                     .build()
     );
 

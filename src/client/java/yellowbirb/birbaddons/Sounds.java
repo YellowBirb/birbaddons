@@ -7,8 +7,6 @@ import net.minecraft.sounds.SoundEvent;
 
 public class Sounds {
 
-    // TODO: make a more feature-specific system
-
     public static final SoundEvent ADRENALINEACTIVATE = registerSound("adrenalineactivate");
     public static final SoundEvent ADRENALINESTART = registerSound("adrenalinestart");
     public static final SoundEvent ADRENALINEEND = registerSound("adrenalineend");

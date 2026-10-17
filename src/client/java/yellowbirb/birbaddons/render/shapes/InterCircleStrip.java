@@ -62,38 +62,14 @@ public class InterCircleStrip implements RenderShape{
         Vector3f c1Vertex;
         Vector3f c2Vertex;
 
-        float vy1 = y1;
-        float vy2 = y2;
-        float vradius1 = radius1;
-        float vradius2 = radius2;
-
         while (i1 <= segmentAmount || i2 <= segmentAmount) {
-            c1Vertex = getCircleVertex(i1, segmentAmount, vradius1, x, vy1, z);
-            c2Vertex = getCircleVertex(i2, segmentAmount, vradius2, x, vy2, z);
+            c1Vertex = getCircleVertex(i1 % segmentAmount, segmentAmount, radius1, x, y1, z);
+            c2Vertex = getCircleVertex(i2 % segmentAmount, segmentAmount, radius2, x, y2, z);
             vertexConsumer.addVertex(entry, c1Vertex).setColor(r, g, b, a);
             vertexConsumer.addVertex(entry, c2Vertex).setColor(r, g, b, a);
             i1++;
             i2++;
         }
-
-        //back face, so its visible from both sides
-
-        /*i1 = 0;
-        i2 = 0;
-
-        vy1 = y2;
-        vy2 = y1;
-        vradius1 = radius2;
-        vradius2 = radius1;
-
-        while (i1 <= segmentAmount || i2 <= segmentAmount) {
-            c1Vertex = getCircleVertex(i1, segmentAmount, vradius1, x, vy1, z);
-            c2Vertex = getCircleVertex(i2, segmentAmount, vradius2, x, vy2, z);
-            vertexConsumer.addVertex(entry, c1Vertex).setColor(r, g, b, a);
-            vertexConsumer.addVertex(entry, c2Vertex).setColor(r, g, b, a);
-            i1++;
-            i2++;
-        }*/
     }
 
     private Vector3f getCircleVertex(int i, int segmentAmount, float radius, float x, float y, float z) {

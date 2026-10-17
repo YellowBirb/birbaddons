@@ -48,28 +48,33 @@ public class CircleXZ implements RenderShape{
 
     @Override
     public RenderPipeline getSeeThroughRenderPipeline() {
-        return CustomRenderPipelines.LINE_STRIP_THROUGH_WALLS;
+        return CustomRenderPipelines.LINES_THROUGH_WALLS;
     }
 
     @Override
     public RenderPipeline getNonSeeThroughRenderPipeline() {
-        return CustomRenderPipelines.LINE_STRIP;
+        return CustomRenderPipelines.LINES;
     }
 
     @Override
     public void render(PoseStack matrixStack, VertexConsumer vertexConsumer) {
         PoseStack.Pose entry = matrixStack.last();
 
-        for (int i = 0; i <= segmentAmount; i++) {
+        // one start/end pair per segment, both with the segment direction as normal (expanded to a quad by rendertype_lines)
+        for (int i = 0; i < segmentAmount; i++) {
 
             float x1 = circleX(i, segmentAmount, radius, x);
-            float x2 = circleX(i + 1, segmentAmount, radius, x);
+            float x2 = circleX((i + 1) % segmentAmount, segmentAmount, radius, x);
             float z1 = circleZ(i, segmentAmount, radius, z);
-            float z2 = circleZ(i + 1, segmentAmount, radius, z);
+            float z2 = circleZ((i + 1) % segmentAmount, segmentAmount, radius, z);
 
             Vector3f normalVec = new Vector3f(x2-x1, 0, z2-z1).normalize();
 
             vertexConsumer.addVertex(entry, x1, y, z1)
+                    .setColor(r, g, b, a)
+                    .setNormal(entry, normalVec)
+                    .setLineWidth(1);
+            vertexConsumer.addVertex(entry, x2, y, z2)
                     .setColor(r, g, b, a)
                     .setNormal(entry, normalVec)
                     .setLineWidth(1);
