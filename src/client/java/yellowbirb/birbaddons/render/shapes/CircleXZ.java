@@ -22,9 +22,10 @@ public class CircleXZ implements RenderShape{
     public final int g;
     public final int b;
     public final int a;
+    public final int lineWidth;
     public final boolean visibleThroughWalls;
 
-    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
+    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int r, int g, int b, int a, int lineWidth, boolean visibleThroughWalls) {
         this.radius = radius;
         this.segmentAmount = max(8, segmentAmount);
         this.x = x;
@@ -34,7 +35,12 @@ public class CircleXZ implements RenderShape{
         this.g = g;
         this.b = b;
         this.a = a;
+        this.lineWidth = lineWidth;
         this.visibleThroughWalls = visibleThroughWalls;
+    }
+
+    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
+        this(radius, segmentAmount, x, y, z, r, g, b, a, 1, visibleThroughWalls);
     }
 
     public CircleXZ(float radius, float segmentLength, float x, float y, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
@@ -60,7 +66,6 @@ public class CircleXZ implements RenderShape{
     public void render(PoseStack matrixStack, VertexConsumer vertexConsumer) {
         PoseStack.Pose entry = matrixStack.last();
 
-        // one start/end pair per segment, both with the segment direction as normal (expanded to a quad by rendertype_lines)
         for (int i = 0; i < segmentAmount; i++) {
 
             float x1 = circleX(i, segmentAmount, radius, x);
@@ -73,11 +78,11 @@ public class CircleXZ implements RenderShape{
             vertexConsumer.addVertex(entry, x1, y, z1)
                     .setColor(r, g, b, a)
                     .setNormal(entry, normalVec)
-                    .setLineWidth(1);
+                    .setLineWidth(lineWidth);
             vertexConsumer.addVertex(entry, x2, y, z2)
                     .setColor(r, g, b, a)
                     .setNormal(entry, normalVec)
-                    .setLineWidth(1);
+                    .setLineWidth(lineWidth);
         }
     }
 

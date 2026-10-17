@@ -17,22 +17,24 @@ import org.joml.Vector4f;
 import yellowbirb.birbaddons.BirbAddonsClient;
 import yellowbirb.birbaddons.render.shapes.RenderShape;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+// Only works for list topologies (LINES, QUADS, ...): the meshes of a draw are concatenated, which would stitch strips together.
 public class Renderer {
 
     private static final StagedVertexBuffer stagedBuffer = new StagedVertexBuffer(() -> "BirbAddons Renderer Buffer", RenderType.SMALL_BUFFER_SIZE);
 
-    // TODO: batching
+    public static void drawShapes(LevelRenderContext ctx, List<RenderShape> shapes) {
 
-    public static void drawShape(LevelRenderContext ctx, RenderShape shape) {
-
-
-        RenderPipeline pipeline = shape.getRenderPipeline();
-        VertexFormat format = pipeline.getVertexFormatBinding(0);
-        assert format != null;
-        StagedVertexBuffer.Draw draw = stagedBuffer.appendDraw(format, pipeline.getPrimitiveTopology());
+        Map<RenderPipeline, List<RenderShape>> shapesByPipeline = new LinkedHashMap<>();
+        for (RenderShape shape : shapes) {
+            shapesByPipeline.computeIfAbsent(shape.getRenderPipeline(), _ -> new ArrayList<>()).add(shape);
+        }
 
         PoseStack matrices = ctx.poseStack();
         Vec3 cam = ctx.levelState().cameraRenderState.pos;
@@ -40,24 +42,30 @@ public class Renderer {
         matrices.pushPose();
         matrices.translate(-cam.x, -cam.y, -cam.z);
 
-        final var builder = stagedBuffer.getVertexBuilder(draw);
+        Map<RenderPipeline, StagedVertexBuffer.Draw> draws = new LinkedHashMap<>();
+        for (Map.Entry<RenderPipeline, List<RenderShape>> entry : shapesByPipeline.entrySet()) {
+            RenderPipeline pipeline = entry.getKey();
+            VertexFormat format = pipeline.getVertexFormatBinding(0);
+            assert format != null;
 
-        shape.render(matrices, builder);
+            StagedVertexBuffer.Draw draw = stagedBuffer.appendDraw(format, pipeline.getPrimitiveTopology());
+            VertexConsumer builder = stagedBuffer.getVertexBuilder(draw);
+            for (RenderShape shape : entry.getValue()) {
+                shape.render(matrices, builder);
+            }
+            draws.put(pipeline, draw);
+        }
 
         matrices.popPose();
 
         stagedBuffer.upload();
 
-        StagedVertexBuffer.ExecuteInfo info = stagedBuffer.getExecuteInfo(draw);
-
-        if (info != null) {
-            draw(Minecraft.getInstance(), info, pipeline);
-        }
+        draw(Minecraft.getInstance(), draws);
 
         stagedBuffer.endFrame();
     }
 
-    private static void draw(Minecraft client, StagedVertexBuffer.ExecuteInfo info, RenderPipeline pipeline) {
+    private static void draw(Minecraft client, Map<RenderPipeline, StagedVertexBuffer.Draw> draws) {
 
         GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
                 .writeTransform(RenderSystem.getModelViewMatrixCopy(), new Vector4f(1f, 1f, 1f, 1f), new Vector3f(), new Matrix4f());
@@ -65,8 +73,6 @@ public class Renderer {
         try (RenderPass renderPass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> BirbAddonsClient.MOD_ID + " rendering", client.gameRenderer.mainRenderTarget().getColorTextureView(), Optional.empty(),client.gameRenderer.mainRenderTarget().getDepthTextureView(), OptionalDouble.empty())) {
-
-            renderPass.setPipeline(pipeline);
 
             ScissorState scissorState = RenderSystem.getScissorStateForRenderTypeDraws();
             if (scissorState.enabled()) {
@@ -76,13 +82,19 @@ public class Renderer {
             RenderSystem.bindDefaultUniforms(renderPass);
             renderPass.setUniform("DynamicTransforms", dynamicTransforms);
 
+            for (Map.Entry<RenderPipeline, StagedVertexBuffer.Draw> entry : draws.entrySet()) {
+                StagedVertexBuffer.ExecuteInfo info = stagedBuffer.getExecuteInfo(entry.getValue());
+                if (info == null) {
+                    continue;
+                }
 
-            renderPass.setVertexBuffer(0, info.vertexBuffer().slice());
+                renderPass.setPipeline(entry.getKey());
 
-            renderPass.setIndexBuffer(info.indexBuffer(), info.indexType());
+                renderPass.setVertexBuffer(0, info.vertexBuffer().slice());
+                renderPass.setIndexBuffer(info.indexBuffer(), info.indexType());
 
-
-            renderPass.drawIndexed(info.indexCount(), 1, info.firstIndex(), info.baseVertex(), 0);
+                renderPass.drawIndexed(info.indexCount(), 1, info.firstIndex(), info.baseVertex(), 0);
+            }
         }
     }
 

@@ -64,6 +64,8 @@ public class CustomRenderPipelines {
                     .build()
     );
 
+    // Only used by the (currently unused) Box. Strips are not batchable: consecutive strips in one draw get stitched
+    // together unless padded with degenerate vertices, so prefer QUADS for new shapes.
     public static final RenderPipeline TRIANGLE_STRIP = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/triangle_strip"))
@@ -84,14 +86,14 @@ public class CustomRenderPipelines {
 
     public static final RenderPipeline QUADS = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-                    .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/triangle_strip_through_walls"))
+                    .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/quads"))
                     .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
                     .build()
     );
 
     public static final RenderPipeline QUADS_THROUGH_WALLS = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-                    .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/triangle_strip_through_walls"))
+                    .withLocation(Identifier.fromNamespaceAndPath(BirbAddonsClient.MOD_ID, "pipeline/quads_through_walls"))
                     .withDepthStencilState(Optional.empty())
                     .build()
     );

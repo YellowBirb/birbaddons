@@ -1,17 +1,19 @@
 package yellowbirb.birbaddons.render;
 
 import yellowbirb.birbaddons.render.shapes.CircleXZ;
+import yellowbirb.birbaddons.render.shapes.CompoundShape;
 import yellowbirb.birbaddons.render.shapes.InterCircleStrip;
 
 import static java.lang.Math.*;
 
 public class RenderUtils {
 
-    public static void drawBoxyRing(double alpha, int deltaY, float playerX, float playerY, float playerZ,
-                                    float angleMargin, float heightMargin,
-                                    int boxyRingInnerColorR, int boxyRingInnerColorG, int boxyRingInnerColorB, int boxyRingInnerColorA, boolean boxyRingInnerVisibleThroughWalls,
-                                    int boxyRingOuterCornerColorR, int boxyRingOuterCornerColorG, int boxyRingOuterCornerColorB, int boxyRingOuterCornerColorA, boolean boxyRingOuterCornerVisibleThroughWalls,
-                                    int boxyRingOuterPlaneColorR, int boxyRingOuterPlaneColorG, int boxyRingOuterPlaneColorB, int boxyRingOuterPlaneColorA, boolean boxyRingOuterPlaneVisibleThroughWalls) {
+    public static CompoundShape createBoxyRing(String featureID, String ID,
+                                               double alpha, int deltaY, float playerX, float playerY, float playerZ,
+                                               float angleMargin, float heightMargin,
+                                               int boxyRingInnerColorR, int boxyRingInnerColorG, int boxyRingInnerColorB, int boxyRingInnerColorA, boolean boxyRingInnerVisibleThroughWalls,
+                                               int boxyRingOuterCornerColorR, int boxyRingOuterCornerColorG, int boxyRingOuterCornerColorB, int boxyRingOuterCornerColorA, boolean boxyRingOuterCornerVisibleThroughWalls,
+                                               int boxyRingOuterPlaneColorR, int boxyRingOuterPlaneColorG, int boxyRingOuterPlaneColorB, int boxyRingOuterPlaneColorA, boolean boxyRingOuterPlaneVisibleThroughWalls) {
 
         double margin_rad = Math.toRadians(angleMargin);
 
@@ -29,17 +31,19 @@ public class RenderUtils {
         float lowY = playerY + deltaY - heightMargin;
         float highY = playerY + deltaY + heightMargin;
 
-        RenderManager.add(new CircleXZ(radius1_1, segmentAmount, playerX, highY, playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls));
-        RenderManager.add(new CircleXZ(radius1_2, segmentAmount, playerX, lowY , playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls));
+        return new CompoundShape(featureID, ID,
+                new CircleXZ(radius1_1, segmentAmount, playerX, highY, playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls),
+                new CircleXZ(radius1_2, segmentAmount, playerX, lowY , playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls),
 
-        RenderManager.add(new CircleXZ(radius2, segmentAmount, playerX, playerY + deltaY, playerZ, boxyRingInnerColorR, boxyRingInnerColorG, boxyRingInnerColorB, boxyRingInnerColorA, boxyRingInnerVisibleThroughWalls));
+                new CircleXZ(radius2, segmentAmount, playerX, playerY + deltaY, playerZ, boxyRingInnerColorR, boxyRingInnerColorG, boxyRingInnerColorB, boxyRingInnerColorA, 2, boxyRingInnerVisibleThroughWalls),
 
-        RenderManager.add(new CircleXZ(radius3_1, segmentAmount, playerX, highY, playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls));
-        RenderManager.add(new CircleXZ(radius3_2, segmentAmount, playerX, lowY , playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls));
+                new CircleXZ(radius3_1, segmentAmount, playerX, highY, playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls),
+                new CircleXZ(radius3_2, segmentAmount, playerX, lowY , playerZ, boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls),
 
-        RenderManager.add(new InterCircleStrip(radius1_1, radius1_2, segmentAmount, playerX, highY, lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls));
-        RenderManager.add(new InterCircleStrip(radius3_1, radius3_2, segmentAmount, playerX, highY, lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls));
-        RenderManager.add(new InterCircleStrip(radius1_1, radius3_1, segmentAmount, playerX, highY, highY, playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls));
-        RenderManager.add(new InterCircleStrip(radius1_2, radius3_2, segmentAmount, playerX, lowY , lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls));
+                new InterCircleStrip(radius1_1, radius1_2, segmentAmount, playerX, highY, lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls),
+                new InterCircleStrip(radius3_1, radius3_2, segmentAmount, playerX, highY, lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls),
+                new InterCircleStrip(radius1_1, radius3_1, segmentAmount, playerX, highY, highY, playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls),
+                new InterCircleStrip(radius1_2, radius3_2, segmentAmount, playerX, lowY , lowY , playerZ, boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls)
+        );
     }
 }

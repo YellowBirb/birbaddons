@@ -45,30 +45,24 @@ public class InterCircleStrip implements RenderShape{
 
     @Override
     public RenderPipeline getSeeThroughRenderPipeline() {
-        return CustomRenderPipelines.TRIANGLE_STRIP_THROUGH_WALLS;
+        return CustomRenderPipelines.QUADS_THROUGH_WALLS;
     }
 
     @Override
     public RenderPipeline getNonSeeThroughRenderPipeline() {
-        return CustomRenderPipelines.TRIANGLE_STRIP;
+        return CustomRenderPipelines.QUADS;
     }
 
     @Override
     public void render(PoseStack matrixStack, VertexConsumer vertexConsumer) {
         PoseStack.Pose entry = matrixStack.last();
 
-        int i1 = 0;
-        int i2 = 0;
-        Vector3f c1Vertex;
-        Vector3f c2Vertex;
-
-        while (i1 <= segmentAmount || i2 <= segmentAmount) {
-            c1Vertex = getCircleVertex(i1 % segmentAmount, segmentAmount, radius1, x, y1, z);
-            c2Vertex = getCircleVertex(i2 % segmentAmount, segmentAmount, radius2, x, y2, z);
-            vertexConsumer.addVertex(entry, c1Vertex).setColor(r, g, b, a);
-            vertexConsumer.addVertex(entry, c2Vertex).setColor(r, g, b, a);
-            i1++;
-            i2++;
+        for (int i = 0; i < segmentAmount; i++) {
+            int next = (i + 1) % segmentAmount;
+            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius1, x, y1, z)).setColor(r, g, b, a);
+            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius2, x, y2, z)).setColor(r, g, b, a);
+            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius2, x, y2, z)).setColor(r, g, b, a);
+            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius1, x, y1, z)).setColor(r, g, b, a);
         }
     }
 

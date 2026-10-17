@@ -20,6 +20,8 @@ public class Theodolite extends Feature {
     private static final String THEODOLITE_MESSAGE = "The target is around [0-9]+ blocks (below|above), at a [1-9][0-9]? degrees angle!";
     private static final String PELT_REWARD_MESSAGE = "Killing the animal rewarded you [1-9][0-9]? pelts.";
 
+    private int boxyRingCounter = 0;
+
     public Theodolite() {
         super("Theodolite", "Theodolite");
 
@@ -64,30 +66,24 @@ public class Theodolite extends Feature {
                 int boxyRingOuterPlaneColorA = 50;
                 boolean boxyRingOuterPlaneVisibleThroughWalls = false;
 
-                RenderUtils.drawBoxyRing(alpha, deltaY, (float) player.getX(), (float) player.getY(), (float) player.getZ(),
+                RenderManager.add(RenderUtils.createBoxyRing(ID, "boxyRing" + boxyRingCounter++,
+                        alpha, deltaY, (float) player.getX(), (float) player.getY(), (float) player.getZ(),
                         angleMargin, heightMargin,
                         boxyRingInnerColorR, boxyRingInnerColorG, boxyRingInnerColorB, boxyRingInnerColorA, boxyRingInnerVisibleThroughWalls,
                         boxyRingOuterCornerColorR, boxyRingOuterCornerColorG, boxyRingOuterCornerColorB, boxyRingOuterCornerColorA, boxyRingOuterCornerVisibleThroughWalls,
-                        boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls);
+                        boxyRingOuterPlaneColorR, boxyRingOuterPlaneColorG, boxyRingOuterPlaneColorB, boxyRingOuterPlaneColorA, boxyRingOuterPlaneVisibleThroughWalls));
             }
         });
 
-        ReceiveGameMessageEvent.register(PELT_REWARD_MESSAGE, (_) -> clearIfEnabled());
+        ReceiveGameMessageEvent.register(PELT_REWARD_MESSAGE, (_) -> RenderManager.clear(ID));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> clearIfEnabled());
-        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((_, _) -> clearIfEnabled());
+        ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> RenderManager.clear(ID));
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((_, _) -> RenderManager.clear(ID));
     }
 
     @Override
-    public void disable() {
-        RenderManager.clear();
-        super.disable();
-    }
-
-    private void clearIfEnabled() {
-        if (enabled()) {
-            RenderManager.clear();
-        }
+    public void onDisable() {
+        RenderManager.clear(ID);
     }
 
     @Override
@@ -95,7 +91,7 @@ public class Theodolite extends Feature {
         LiteralArgumentBuilder<FabricClientCommandSource> command = super.getCommand();
 
         LiteralArgumentBuilder<FabricClientCommandSource> clear = ClientCommands.literal("clear").executes((context) -> {
-            RenderManager.clear();
+            RenderManager.clear(ID);
             Utils.displayMessage(context.getSource().getPlayer(), "Cleared all Theodolite objects drawn in the world");
             return 1;
         });

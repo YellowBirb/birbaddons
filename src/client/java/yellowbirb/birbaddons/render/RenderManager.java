@@ -1,39 +1,66 @@
 package yellowbirb.birbaddons.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import yellowbirb.birbaddons.render.shapes.CompoundShape;
 import yellowbirb.birbaddons.render.shapes.RenderShape;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-// TODO: redo this shit, allow for removal of specific Shapes in case the need to render more than just Theodolite stuffs appears
 public class RenderManager {
 
-    private static final List<RenderShape> shapeList = new ArrayList<>();
+    private static final Map<String, Map<String, CompoundShape>> shapeMap = new LinkedHashMap<>();
 
-    public static void add(RenderShape shape) {
-        shapeList.add(shape);
+    public static void add(CompoundShape shape) {
+        shapeMap.computeIfAbsent(shape.featureID(), _ -> new LinkedHashMap<>()).put(shape.ID(), shape);
     }
 
-    public static RenderShape remove(int index) {
-        return shapeList.remove(index);
+    public static CompoundShape get(String featureID, String ID) {
+        Map<String, CompoundShape> featureShapes = shapeMap.get(featureID);
+        return featureShapes == null ? null : featureShapes.get(ID);
     }
 
-    public static RenderShape removeFirst() {
-        return shapeList.removeFirst();
+    public static boolean contains(String featureID, String ID) {
+        return get(featureID, ID) != null;
     }
 
-    public static RenderShape removeLast() {
-        return shapeList.removeLast();
+    public static CompoundShape remove(String featureID, String ID) {
+        Map<String, CompoundShape> featureShapes = shapeMap.get(featureID);
+        if (featureShapes == null) {
+            return null;
+        }
+
+        CompoundShape removed = featureShapes.remove(ID);
+        if (featureShapes.isEmpty()) {
+            shapeMap.remove(featureID);
+        }
+        return removed;
+    }
+
+    public static CompoundShape remove(CompoundShape shape) {
+        return remove(shape.featureID(), shape.ID());
+    }
+
+    public static void clear(String featureID) {
+        shapeMap.remove(featureID);
     }
 
     public static void clear() {
-        shapeList.clear();
+        shapeMap.clear();
     }
 
     public static void draw(LevelRenderContext ctx) {
-        for (RenderShape shape : shapeList) {
-            Renderer.drawShape(ctx, shape);
+        List<RenderShape> shapes = new ArrayList<>();
+        for (Map<String, CompoundShape> featureShapes : shapeMap.values()) {
+            for (CompoundShape compound : featureShapes.values()) {
+                shapes.addAll(compound.shapes());
+            }
+        }
+
+        if (!shapes.isEmpty()) {
+            Renderer.drawShapes(ctx, shapes);
         }
     }
 

@@ -2,16 +2,13 @@ package yellowbirb.birbaddons.event;
 
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ReceiveGameMessageEvent {
 
     private static final List<String> relevantMessages = new ArrayList<>();
-    private static final Map<String, Consumer<String>> messagesMap = new HashMap<>();
+    private static final Map<String, Consumer<String>> messagesMap = new LinkedHashMap<>();
 
     public static void register(String regex, Consumer<String> consumer) {
         if (!relevantMessages.contains(regex)) {
