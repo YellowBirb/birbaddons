@@ -6,10 +6,20 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import yellowbirb.birbaddons.config.ConfigBoolean;
 import yellowbirb.birbaddons.config.ConfigInteger;
 import yellowbirb.birbaddons.event.ReceiveGameMessageEvent;
@@ -26,18 +36,33 @@ public class Theodolite extends Feature {
 
     private final ConfigInteger maxResults;
     private final ConfigBoolean allowInputZero;
+    private final ConfigBoolean colorfulRings;
 
     private static final String THEODOLITE_MESSAGE_A = "The target is around \\d+ blocks (below|above), at a \\d+ degrees angle!";
     private static final String THEODOLITE_MESSAGE_B = "You are at the exact height!";
     private static final String TASK_COMPLETED_MESSAGE = "Return to the Trapper soon to get a new animal to hunt!";
 
+    private Vec3 lastUsedAt = Vec3.ZERO;
     private int boxyRingCounter = 0;
 
     public Theodolite() {
         super("Theodolite", "Theodolite");
 
-        maxResults = new ConfigInteger(ID, "maxResults", 2);
+        maxResults = new ConfigInteger(ID, "maxResults", 3);
         allowInputZero = new ConfigBoolean(ID, "allowInputZero", false);
+        colorfulRings = new ConfigBoolean(ID, "colorfulRings", false);
+
+        UseItemCallback.EVENT.register((player, level, hand) -> {
+            if (isTheodoliteItem(player.getItemInHand(hand)))
+                lastUsedAt = player.position();
+            return InteractionResult.PASS;
+        });
+
+        UseBlockCallback.EVENT.register((player, level, hand, result) -> {
+            if (isTheodoliteItem(player.getItemInHand(hand)))
+                lastUsedAt = player.position();
+            return InteractionResult.PASS;
+        });
 
         ReceiveGameMessageEvent.register(THEODOLITE_MESSAGE_A, (msg) -> {
             if (enabled.get()) {
@@ -60,13 +85,11 @@ public class Theodolite extends Feature {
                     deltaY2 = -deltaY2;
                 }
 
-                int angle = 90 - rawAngle;
+                double angle = 90 - rawAngle;
+                double angle1 = Math.min(angle + 2.5, 90);
+                double angle2 = Math.max(angle - 2.5, 0);
 
-                double alpha = Math.toRadians(angle);
-                double alpha1 = Math.toRadians(Math.min(angle + 2.5, 90));
-                double alpha2 = Math.toRadians(Math.max(angle - 2.5, 0));
-
-                process(deltaY, deltaY1, deltaY2, alpha, alpha1, alpha2);
+                process(deltaY, deltaY1, deltaY2, angle, angle1, angle2);
             }
         });
 
@@ -78,7 +101,7 @@ public class Theodolite extends Feature {
                 }
 
                 process(0.0F, 0.5F, -0.5F,
-                        0, Math.toRadians(90), Math.toRadians(0));
+                        0, 90, 0);
             }
         });
 
@@ -86,33 +109,45 @@ public class Theodolite extends Feature {
 
         ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> clear());
         ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((_, _) -> clear());
+    }
 
-        // there could be a hud indicating the current minus target Y level
+    private static boolean isTheodoliteItem(ItemStack itemStack) {
+        var tmp = itemStack.get(DataComponents.CUSTOM_DATA);
+        if (tmp != null) {
+            var tmp2 = tmp.copyTag().get("id");
+            if (tmp2 instanceof StringTag(String value)) {
+                return "TALBOTS_THEODOLITE".equals(value);
+            }
+        }
+        return false;
     }
 
     private void process(float deltaY, float deltaY1, float deltaY2,
-                         double alpha, double alpha1, double alpha2) {
+                         double angle, double angle1, double angle2) {
 
-        LocalPlayer player = Minecraft.getInstance().player;
-        // can only be called in-game, so there must for sure be a player riiiiight
-        assert player != null;
+        int boxyRingInnerColor, boxyRingOuterCornerColor, boxyRingOuterPlaneColor;
 
-        float hue = (float) boxyRingCounter / maxResults.get() + 1.0F / 3;
+        if (colorfulRings.get()) {
+            float hue = (float) boxyRingCounter / maxResults.get() + 1.0F / 3;
 
-        int boxyRingInnerColor = Color.HSBtoRGB(hue, 1.0F, 0.8F);
+            boxyRingInnerColor = Color.HSBtoRGB(hue, 1.0F, 0.8F);
+            boxyRingOuterCornerColor = Color.HSBtoRGB(hue, 1.0F, 1.0F);
+            boxyRingOuterPlaneColor = Color.HSBtoRGB(hue, 0.8F, 1.0F) & 0x00FFFFFF | 0x32000000;
+        } else {
+            boxyRingInnerColor = 0xFFFF0000;
+            boxyRingOuterCornerColor = 0xFF00FF00;
+            boxyRingOuterPlaneColor = 0x3200FF00;
+        }
+
         boolean boxyRingInnerVisibleThroughWalls = true;
-
-        int boxyRingOuterCornerColor = Color.HSBtoRGB(hue, 1.0F, 1.0F);
         boolean boxyRingOuterCornerVisibleThroughWalls = false;
-
-        int boxyRingOuterPlaneColor = Color.HSBtoRGB(hue, 0.8F, 1.0F) & 0x00FFFFFF | 0x32000000;
         boolean boxyRingOuterPlaneVisibleThroughWalls = false;
 
         boxyRingCounter = (boxyRingCounter + 1) % maxResults.get();
 
         RenderManager.add(RenderUtils.createBoxyRing(ID, "boxyRing" + boxyRingCounter,
-                (float) player.getX(), (float) player.getY(), (float) player.getZ(),
-                alpha, alpha1, alpha2,
+                (float) lastUsedAt.x, (float) lastUsedAt.y, (float) lastUsedAt.z,
+                Math.toRadians(angle), Math.toRadians(angle1), Math.toRadians(angle2),
                 deltaY, deltaY1, deltaY2,
                 boxyRingInnerColor, boxyRingInnerVisibleThroughWalls,
                 boxyRingOuterCornerColor, boxyRingOuterCornerVisibleThroughWalls,
@@ -137,6 +172,7 @@ public class Theodolite extends Feature {
 
         set.then(maxResults.getCommand());
         set.then(allowInputZero.getCommand());
+        set.then(colorfulRings.getCommand());
 
         command.then(set);
 
@@ -157,6 +193,7 @@ public class Theodolite extends Feature {
                                     if (!enabled()) {
                                         Utils.displayMessage("Feature is not enabled!");
                                     } else {
+                                        lastUsedAt = context.getSource().getPlayer().position();
                                         int deltay = IntegerArgumentType.getInteger(context, "deltay");
                                         int angle = IntegerArgumentType.getInteger(context, "angle");
                                         if (deltay == 0) {
@@ -186,6 +223,7 @@ public class Theodolite extends Feature {
             @Override
             protected void initSettings() {
                 addSwitch("Allow 0 as input", allowInputZero);
+                addSwitch("Colorful Rings", colorfulRings);
             }
         };
     }
