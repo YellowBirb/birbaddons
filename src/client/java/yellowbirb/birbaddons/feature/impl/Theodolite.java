@@ -19,6 +19,7 @@ import yellowbirb.birbaddons.render.RenderManager;
 import yellowbirb.birbaddons.render.RenderUtils;
 import yellowbirb.birbaddons.util.Utils;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 public class Theodolite extends Feature {
@@ -81,10 +82,10 @@ public class Theodolite extends Feature {
             }
         });
 
-        ReceiveGameMessageEvent.register(TASK_COMPLETED_MESSAGE, (_) -> RenderManager.clear(ID));
+        ReceiveGameMessageEvent.register(TASK_COMPLETED_MESSAGE, (_) -> clear());
 
-        ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> RenderManager.clear(ID));
-        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((_, _) -> RenderManager.clear(ID));
+        ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> clear());
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((_, _) -> clear());
 
         // there could be a hud indicating the current minus target Y level
     }
@@ -96,13 +97,15 @@ public class Theodolite extends Feature {
         // can only be called in-game, so there must for sure be a player riiiiight
         assert player != null;
 
-        int boxyRingInnerColor = 0xFFFF0000;
+        float hue = (float) boxyRingCounter / maxResults.get() + 1.0F / 3;
+
+        int boxyRingInnerColor = Color.HSBtoRGB(hue, 1.0F, 0.8F);
         boolean boxyRingInnerVisibleThroughWalls = true;
 
-        int boxyRingOuterCornerColor = 0xFF00FF00;
+        int boxyRingOuterCornerColor = Color.HSBtoRGB(hue, 1.0F, 1.0F);
         boolean boxyRingOuterCornerVisibleThroughWalls = false;
 
-        int boxyRingOuterPlaneColor = 0x3200FF00;
+        int boxyRingOuterPlaneColor = Color.HSBtoRGB(hue, 0.8F, 1.0F) & 0x00FFFFFF | 0x32000000;
         boolean boxyRingOuterPlaneVisibleThroughWalls = false;
 
         boxyRingCounter = (boxyRingCounter + 1) % maxResults.get();
@@ -116,9 +119,14 @@ public class Theodolite extends Feature {
                 boxyRingOuterPlaneColor, boxyRingOuterPlaneVisibleThroughWalls));
     }
 
+    private void clear() {
+        RenderManager.clear(ID);
+        boxyRingCounter = 0;
+    }
+
     @Override
     public void onDisable() {
-        RenderManager.clear(ID);
+        clear();
     }
 
     @Override
@@ -133,7 +141,7 @@ public class Theodolite extends Feature {
         command.then(set);
 
         LiteralArgumentBuilder<FabricClientCommandSource> clear = ClientCommands.literal("clear").executes((context) -> {
-            RenderManager.clear(ID);
+            clear();
             Utils.displayMessage(context.getSource().getPlayer(), "Cleared all Theodolite objects drawn in the world");
             return 1;
         });
@@ -177,7 +185,7 @@ public class Theodolite extends Feature {
         return new FeatureSettingsPopup(x, y, width, height, removeWidgetConsumer, this.name){
             @Override
             protected void initSettings() {
-                addSwitch("Allow Input Zero", allowInputZero);
+                addSwitch("Allow 0 as input", allowInputZero);
             }
         };
     }
