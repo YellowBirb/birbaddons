@@ -17,13 +17,10 @@ public class InterCircleStrip implements RenderShape{
     public final float y1; // assumes same center and segmentAmount for both circles
     public final float y2;
     public final float z;
-    public final int r;
-    public final int g;
-    public final int b;
-    public final int a;
+    public final int color;
     public final boolean visibleThroughWalls;
 
-    public InterCircleStrip(float radius1, float radius2, int segmentAmount, float x, float y1, float y2, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
+    public InterCircleStrip(float radius1, float radius2, int segmentAmount, float x, float y1, float y2, float z, int color, boolean visibleThroughWalls) {
         this.radius1 = radius1;
         this.radius2 = radius2;
         this.segmentAmount = segmentAmount;
@@ -31,10 +28,7 @@ public class InterCircleStrip implements RenderShape{
         this.y1 = y1;
         this.y2 = y2;
         this.z = z;
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this.color = color;
         this.visibleThroughWalls = visibleThroughWalls;
     }
 
@@ -59,10 +53,10 @@ public class InterCircleStrip implements RenderShape{
 
         for (int i = 0; i < segmentAmount; i++) {
             int next = (i + 1) % segmentAmount;
-            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius1, x, y1, z)).setColor(r, g, b, a);
-            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius2, x, y2, z)).setColor(r, g, b, a);
-            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius2, x, y2, z)).setColor(r, g, b, a);
-            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius1, x, y1, z)).setColor(r, g, b, a);
+            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius1, x, y1, z)).setColor(color);
+            vertexConsumer.addVertex(entry, getCircleVertex(i, segmentAmount, radius2, x, y2, z)).setColor(color);
+            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius2, x, y2, z)).setColor(color);
+            vertexConsumer.addVertex(entry, getCircleVertex(next, segmentAmount, radius1, x, y1, z)).setColor(color);
         }
     }
 

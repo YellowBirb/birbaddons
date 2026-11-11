@@ -18,33 +18,27 @@ public class CircleXZ implements RenderShape{
     public final float x;
     public final float y;
     public final float z;
-    public final int r;
-    public final int g;
-    public final int b;
-    public final int a;
+    public final int color;
     public final int lineWidth;
     public final boolean visibleThroughWalls;
 
-    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int r, int g, int b, int a, int lineWidth, boolean visibleThroughWalls) {
+    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int color, int lineWidth, boolean visibleThroughWalls) {
         this.radius = radius;
         this.segmentAmount = max(8, segmentAmount);
         this.x = x;
         this.y = y;
         this.z = z;
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this.color = color;
         this.lineWidth = lineWidth;
         this.visibleThroughWalls = visibleThroughWalls;
     }
 
-    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
-        this(radius, segmentAmount, x, y, z, r, g, b, a, 1, visibleThroughWalls);
+    public CircleXZ(float radius, int segmentAmount, float x, float y, float z, int color, boolean visibleThroughWalls) {
+        this(radius, segmentAmount, x, y, z, color, 1, visibleThroughWalls);
     }
 
-    public CircleXZ(float radius, float segmentLength, float x, float y, float z, int r, int g, int b, int a, boolean visibleThroughWalls) {
-        this(radius, max(8, (int) round((PI * radius * 2) / segmentLength)), x, y, z, r, g, b, a, visibleThroughWalls);
+    public CircleXZ(float radius, float segmentLength, float x, float y, float z, int color, boolean visibleThroughWalls) {
+        this(radius, max(8, (int) round((PI * radius * 2) / segmentLength)), x, y, z, color, visibleThroughWalls);
     }
 
     @Override
@@ -76,11 +70,11 @@ public class CircleXZ implements RenderShape{
             Vector3f normalVec = new Vector3f(x2-x1, 0, z2-z1).normalize();
 
             vertexConsumer.addVertex(entry, x1, y, z1)
-                    .setColor(r, g, b, a)
+                    .setColor(color)
                     .setNormal(entry, normalVec)
                     .setLineWidth(lineWidth);
             vertexConsumer.addVertex(entry, x2, y, z2)
-                    .setColor(r, g, b, a)
+                    .setColor(color)
                     .setNormal(entry, normalVec)
                     .setLineWidth(lineWidth);
         }
